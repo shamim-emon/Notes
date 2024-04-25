@@ -1,6 +1,26 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.ktlint)
+}
+
+ktlint {
+    filter {
+        exclude("**/*.md")
+    }
+    debug.set(true)
+    disabledRules.set(setOf("final-newline"))
+}
+
+task<Copy>("installGitHook") {
+    from(File(rootProject.rootDir, "pre-commit"))
+    into { File(rootProject.rootDir, ".git/hooks") }
+    fileMode = "0777".toInt()
+}
+
+
+tasks.register(":presentation:preBuild") {
+    dependsOn("installGitHook")
 }
 
 android {
