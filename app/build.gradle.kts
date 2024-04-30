@@ -23,8 +23,8 @@ task<Copy>("installGitHook") {
 }
 
 
-tasks.register(":app:preBuild") {
-    dependsOn("installGitHook")
+afterEvaluate {
+    tasks.getByPath(":app:preBuild").dependsOn("installGitHook")
 }
 
 android {
