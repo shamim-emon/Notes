@@ -13,7 +13,7 @@ ktlint {
 }
 
 task<Copy>("installGitHook") {
-    from(File(rootProject.rootDir, "pre-commit"))
+    from(File(rootProject.rootDir, "pre-commit.txt"))
     into { File(rootProject.rootDir, ".git/hooks") }
     fileMode = "0777".toInt()
     doLast {
