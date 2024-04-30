@@ -19,7 +19,7 @@ task<Copy>("installGitHook") {
 }
 
 
-tasks.register(":preBuild") {
+tasks.register("preBuild") {
     dependsOn("installGitHook")
 }
 
