@@ -16,6 +16,10 @@ task<Copy>("installGitHook") {
     from(File(rootProject.rootDir, "pre-commit"))
     into { File(rootProject.rootDir, ".git/hooks") }
     fileMode = "0777".toInt()
+    doLast {
+        logger.info("Git hook installed successfully.")
+    }
+
 }
 
 
