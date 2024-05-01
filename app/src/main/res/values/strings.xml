@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Notes</string>
+    <string name="first_note">Create your first note !</string>
+    <string name="empty_search_result">File not found. Try searching again.</string>
 </resources>
