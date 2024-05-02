@@ -2,6 +2,7 @@ package bd.emon.notes.ui.home
 
 import android.content.res.Configuration
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -32,19 +33,22 @@ import androidx.compose.ui.unit.dp
 import bd.emon.notes.R
 import bd.emon.notes.ui.theme.NotesTheme
 import bd.emon.notes.ui.theme.stronglyDeemphasizedAlpha
+
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
     content: @Composable (PaddingValues) -> Unit,
+    onSearchPressed: () -> Unit,
+    onSettingPressed: () -> Unit,
 ) {
     Surface(modifier = modifier.fillMaxSize()) {
         Scaffold(
             topBar = {
                 DefaultAppBar(
                     title = stringResource(id = R.string.app_name),
-                    firstAction = {},
+                    firstAction = onSearchPressed,
                     firstActionIcon = Icons.Filled.Search,
-                    secondAction = {},
+                    secondAction = onSettingPressed,
                     secondActionIcon = Icons.Filled.Settings
                 )
             },
@@ -55,7 +59,7 @@ fun HomeScreen(
                     containerColor = MaterialTheme.colorScheme.secondaryContainer,
                     contentColor = MaterialTheme.colorScheme.secondary
                 ) {
-                    Icon(Icons.Filled.Add, "Small floating action button.")
+                    Icon(Icons.Filled.Add, null)
                 }
             }
         )
@@ -90,7 +94,9 @@ private fun HomeScreenPreview() {
                         backgroundImgId = R.drawable.bg_no_note,
                         backgroundTextId = R.string.first_note
                     )
-                }
+                },
+                onSearchPressed = {},
+                onSettingPressed = {}
             )
         }
     }
@@ -139,41 +145,6 @@ fun DefaultAppBar(
         }
     )
 }
-
-@Preview(
-    name = "DefaultAppBar light theme",
-    showBackground = true,
-    uiMode = Configuration.UI_MODE_NIGHT_YES
-)
-@Preview(
-    name = "DefaultAppBar dark theme",
-    showBackground = true,
-    uiMode = Configuration.UI_MODE_NIGHT_NO
-)
-@Composable
-private fun DefaultAppBarPreview() {
-    NotesTheme {
-        // A surface container using the 'background' color from the theme
-        Surface(
-            modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colorScheme.background
-        ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-            ) {
-                DefaultAppBar(
-                    title = stringResource(id = R.string.app_name),
-                    firstAction = {},
-                    firstActionIcon = Icons.Filled.Search,
-                    secondAction = {},
-                    secondActionIcon = Icons.Filled.Settings
-                )
-            }
-        }
-    }
-}
-
 @Composable
 fun ContextBackground(
     modifier: Modifier = Modifier,
@@ -181,11 +152,11 @@ fun ContextBackground(
     backgroundTextId: Int
 ) {
     Column(
-        modifier = modifier
+        modifier = modifier,
+        verticalArrangement = Arrangement.Center
     ) {
         Image(
             painter = painterResource(id = backgroundImgId),
-            modifier = modifier,
             contentDescription = null
         )
         Text(
