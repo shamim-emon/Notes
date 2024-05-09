@@ -1,18 +1,17 @@
 package bd.emon.notes.ui.home
 
+import android.annotation.SuppressLint
 import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.outlined.Search
+import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -34,12 +33,13 @@ import bd.emon.notes.R
 import bd.emon.notes.ui.theme.NotesTheme
 import bd.emon.notes.ui.theme.stronglyDeemphasizedAlpha
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
-    content: @Composable (PaddingValues) -> Unit,
     onSearchPressed: () -> Unit,
     onSettingPressed: () -> Unit,
+    onAddNotePressed: () -> Unit
 ) {
     Surface(modifier = modifier.fillMaxSize()) {
         Scaffold(
@@ -47,15 +47,23 @@ fun HomeScreen(
                 DefaultAppBar(
                     title = stringResource(id = R.string.app_name),
                     firstAction = onSearchPressed,
-                    firstActionIcon = Icons.Filled.Search,
+                    firstActionIcon = Icons.Outlined.Search,
                     secondAction = onSettingPressed,
-                    secondActionIcon = Icons.Filled.Settings
+                    secondActionIcon = Icons.Outlined.Settings
                 )
             },
-            content = content,
+            content = { innerPadding ->
+                ContextBackground(
+                    modifier = Modifier
+                        .padding(innerPadding)
+                        .fillMaxSize(),
+                    backgroundImgId = R.drawable.bg_no_note,
+                    backgroundTextId = R.string.first_note
+                )
+            },
             floatingActionButton = {
                 SmallFloatingActionButton(
-                    onClick = { },
+                    onClick = onAddNotePressed,
                     containerColor = MaterialTheme.colorScheme.secondaryContainer,
                     contentColor = MaterialTheme.colorScheme.secondary
                 ) {
@@ -76,7 +84,6 @@ fun HomeScreen(
     showBackground = true,
     uiMode = Configuration.UI_MODE_NIGHT_NO
 )
-@Preview
 @Composable
 private fun HomeScreenPreview() {
     NotesTheme {
@@ -86,22 +93,13 @@ private fun HomeScreenPreview() {
             color = MaterialTheme.colorScheme.background
         ) {
             HomeScreen(
-                content = {
-                    ContextBackground(
-                        modifier = Modifier
-                            .padding(horizontal = 32.dp)
-                            .fillMaxSize(),
-                        backgroundImgId = R.drawable.bg_no_note,
-                        backgroundTextId = R.string.first_note
-                    )
-                },
                 onSearchPressed = {},
-                onSettingPressed = {}
+                onSettingPressed = {},
+                onAddNotePressed = {}
             )
         }
     }
 }
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DefaultAppBar(
@@ -145,6 +143,7 @@ fun DefaultAppBar(
         }
     )
 }
+
 @Composable
 fun ContextBackground(
     modifier: Modifier = Modifier,
@@ -157,7 +156,8 @@ fun ContextBackground(
     ) {
         Image(
             painter = painterResource(id = backgroundImgId),
-            contentDescription = null
+            contentDescription = null,
+            modifier = Modifier.padding(horizontal = 16.dp)
         )
         Text(
             text = stringResource(id = backgroundTextId),
@@ -169,61 +169,5 @@ fun ContextBackground(
                 .fillMaxWidth()
 
         )
-    }
-}
-
-@Preview(
-    name = "NoNote light theme",
-    showBackground = true,
-    uiMode = Configuration.UI_MODE_NIGHT_YES
-)
-@Preview(name = "NoNote dark theme", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
-@Composable
-private fun NoNotePreview() {
-    NotesTheme {
-        // A surface container using the 'background' color from the theme
-        Surface(
-            modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colorScheme.background
-        ) {
-            ContextBackground(
-                modifier = Modifier
-                    .padding(horizontal = 32.dp)
-                    .fillMaxWidth()
-                    .wrapContentHeight(),
-                backgroundImgId = R.drawable.bg_no_note,
-                backgroundTextId = R.string.first_note
-            )
-        }
-    }
-}
-
-@Preview(
-    name = "EmptySearch light theme",
-    showBackground = true,
-    uiMode = Configuration.UI_MODE_NIGHT_YES
-)
-@Preview(
-    name = "EmptySearch dark theme",
-    showBackground = true,
-    uiMode = Configuration.UI_MODE_NIGHT_NO
-)
-@Composable
-private fun EmptySearchPreview() {
-    NotesTheme {
-        // A surface container using the 'background' color from the theme
-        Surface(
-            modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colorScheme.background
-        ) {
-            ContextBackground(
-                modifier = Modifier
-                    .padding(horizontal = 22.dp)
-                    .fillMaxWidth()
-                    .wrapContentHeight(),
-                backgroundImgId = R.drawable.bg_search_empty,
-                backgroundTextId = R.string.empty_search_result
-            )
-        }
     }
 }
