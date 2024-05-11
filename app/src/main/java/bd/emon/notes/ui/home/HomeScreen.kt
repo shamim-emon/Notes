@@ -9,7 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -23,7 +23,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -44,12 +43,10 @@ fun HomeScreen(
     Surface(modifier = modifier.fillMaxSize()) {
         Scaffold(
             topBar = {
-                DefaultAppBar(
+                HomeAppBar(
                     title = stringResource(id = R.string.app_name),
-                    firstAction = onSearchPressed,
-                    firstActionIcon = Icons.Outlined.Search,
-                    secondAction = onSettingPressed,
-                    secondActionIcon = Icons.Outlined.Settings
+                    onSearchPressed = onSearchPressed,
+                    onSettingPressed = onSettingPressed
                 )
             },
             content = { innerPadding ->
@@ -67,7 +64,7 @@ fun HomeScreen(
                     containerColor = MaterialTheme.colorScheme.secondaryContainer,
                     contentColor = MaterialTheme.colorScheme.secondary
                 ) {
-                    Icon(Icons.Filled.Add, null)
+                    Icon(Icons.Outlined.Add, null)
                 }
             }
         )
@@ -100,16 +97,16 @@ private fun HomeScreenPreview() {
         }
     }
 }
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DefaultAppBar(
+fun HomeAppBar(
     modifier: Modifier = Modifier,
     title: String,
-    firstActionIcon: ImageVector,
-    firstAction: () -> Unit,
-    secondActionIcon: ImageVector,
-    secondAction: () -> Unit,
-) {
+    onSearchPressed: () -> Unit,
+    onSettingPressed: () -> Unit,
+
+    ) {
     TopAppBar(
         title = {
             Text(
@@ -120,22 +117,22 @@ fun DefaultAppBar(
         modifier = modifier,
         actions = {
             IconButton(
-                onClick = firstAction,
+                onClick = onSearchPressed,
                 modifier = Modifier.padding(4.dp)
             ) {
                 Icon(
-                    firstActionIcon,
+                    Icons.Outlined.Search,
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.onSurface.copy(stronglyDeemphasizedAlpha)
                 )
             }
 
             IconButton(
-                onClick = secondAction,
+                onClick = onSettingPressed,
                 modifier = Modifier.padding(4.dp)
             ) {
                 Icon(
-                    secondActionIcon,
+                    Icons.Outlined.Settings,
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.onSurface.copy(stronglyDeemphasizedAlpha)
                 )

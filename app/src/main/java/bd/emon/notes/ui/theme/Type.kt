@@ -36,6 +36,14 @@ val Typography = Typography(
         letterSpacing = 0.sp
     ),
 
+    displaySmall = TextStyle(
+        fontFamily = FontFamily.Default,
+        fontWeight = FontWeight.Normal,
+        fontSize = 35.sp,
+//        lineHeight = 27.sp,
+//        letterSpacing = 10.sp
+    ),
+
 
 
     /* Other default text styles to override
