@@ -1,4 +1,4 @@
-package bd.emon.notes.ui.theme
+package bd.emon.notes.presentation.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

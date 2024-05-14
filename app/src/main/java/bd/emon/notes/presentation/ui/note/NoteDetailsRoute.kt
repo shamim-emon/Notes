@@ -1,4 +1,4 @@
-package bd.emon.notes.ui.note
+package bd.emon.notes.presentation.ui.note
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue

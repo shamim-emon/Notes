@@ -1,9 +1,9 @@
-package bd.emon.notes
+package bd.emon.notes.presentation.ui
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import bd.emon.notes.ui.theme.NotesTheme
+import bd.emon.notes.presentation.ui.theme.NotesTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

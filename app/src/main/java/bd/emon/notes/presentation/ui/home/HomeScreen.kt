@@ -1,4 +1,4 @@
-package bd.emon.notes.ui.home
+package bd.emon.notes.presentation.ui.home
 
 import android.annotation.SuppressLint
 import android.content.res.Configuration
@@ -29,8 +29,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import bd.emon.notes.R
-import bd.emon.notes.ui.theme.NotesTheme
-import bd.emon.notes.ui.theme.stronglyDeemphasizedAlpha
+import bd.emon.notes.presentation.ui.theme.NotesTheme
+import bd.emon.notes.presentation.ui.theme.stronglyDeemphasizedAlpha
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -105,8 +105,7 @@ fun HomeAppBar(
     title: String,
     onSearchPressed: () -> Unit,
     onSettingPressed: () -> Unit,
-
-    ) {
+) {
     TopAppBar(
         title = {
             Text(

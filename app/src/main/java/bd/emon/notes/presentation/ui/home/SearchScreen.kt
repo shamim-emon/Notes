@@ -1,4 +1,4 @@
-package bd.emon.notes.ui.home
+package bd.emon.notes.presentation.ui.home
 
 import android.content.res.Configuration
 import androidx.compose.foundation.BorderStroke
@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
@@ -38,8 +37,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import bd.emon.notes.R
-import bd.emon.notes.ui.theme.NotesTheme
-import bd.emon.notes.ui.theme.stronglyDeemphasizedAlpha
+import bd.emon.notes.presentation.ui.theme.NotesTheme
+import bd.emon.notes.presentation.ui.theme.stronglyDeemphasizedAlpha
 
 @Composable
 fun SearchScreen(

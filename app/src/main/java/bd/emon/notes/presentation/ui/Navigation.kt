@@ -1,16 +1,16 @@
-package bd.emon.notes
+package bd.emon.notes.presentation.ui
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import bd.emon.notes.Destination.HOME_ROUTE
-import bd.emon.notes.Destination.NOTE_ROUTE
-import bd.emon.notes.Destination.SEARCH_ROUTE
-import bd.emon.notes.ui.home.HomeRoute
-import bd.emon.notes.ui.home.SearchRoute
-import bd.emon.notes.ui.note.NoteDetailsRoute
+import bd.emon.notes.presentation.ui.Destination.HOME_ROUTE
+import bd.emon.notes.presentation.ui.Destination.NOTE_ROUTE
+import bd.emon.notes.presentation.ui.Destination.SEARCH_ROUTE
+import bd.emon.notes.presentation.ui.home.HomeRoute
+import bd.emon.notes.presentation.ui.home.SearchRoute
+import bd.emon.notes.presentation.ui.note.NoteDetailsRoute
 
 object Destination {
     const val HOME_ROUTE = "home"

@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.ktlint)
+    alias(libs.plugins.ksp)
 }
 
 ktlint {
@@ -74,36 +75,42 @@ android {
 dependencies {
 
     val composeBom = platform(libs.androidx.compose.bom)
-    implementation(composeBom)
-    androidTestImplementation(composeBom)
 
+    implementation(composeBom)
     implementation(libs.kotlin.stdlib)
     implementation(libs.kotlinx.coroutines.android)
-
+    implementation(libs.kotlinx.coroutines.test)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.navigation.compose)
-
     implementation(libs.androidx.lifecycle.viewModelCompose)
-
     implementation(libs.androidx.activity.compose)
-
     implementation(libs.google.android.material)
-
     implementation(libs.androidx.compose.foundation.layout)
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.compose.material.iconsExtended)
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.runtime)
     debugImplementation(libs.androidx.compose.ui.tooling)
-
     implementation(libs.accompanist.permissions)
-
     implementation(libs.coil.kt.compose)
-
+    implementation(libs.androidx.room.ktx)
+    implementation(libs.androidx.room.runtime)
+    ksp(libs.androidx.room.compiler)
     testImplementation(libs.junit)
-    testImplementation(libs.androidx.test.core)
+    debugImplementation(libs.androidx.test.core)
+    testImplementation(libs.androidx.arch.test.core)
     testImplementation(libs.androidx.test.ext.junit)
     testImplementation(libs.androidx.test.ext.truth)
     testImplementation(libs.robolectric)
+    testImplementation(libs.androidx.room.testing)
+
+    androidTestImplementation(composeBom)
+    androidTestImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.test.runner)
+    androidTestImplementation(libs.androidx.test.core)
+    androidTestImplementation(libs.androidx.arch.test.core)
+    androidTestImplementation(libs.androidx.test.ext.junit)
+    androidTestImplementation(libs.androidx.test.ext.truth)
+    androidTestImplementation(libs.androidx.room.testing)
 }
