@@ -1,8 +1,11 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.ktlint)
+    alias(libs.plugins.kapt)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.hilt)
+    alias(libs.plugins.secrets)
+    alias(libs.plugins.ktlint)
 }
 
 ktlint {
@@ -97,6 +100,10 @@ dependencies {
     implementation(libs.androidx.room.ktx)
     implementation(libs.androidx.room.runtime)
     ksp(libs.androidx.room.compiler)
+    implementation(libs.androidx.hilt.navigation.compose)
+    implementation(libs.hilt.android)
+    kapt(libs.hilt.compiler)
+    kapt(libs.hilt.ext.compiler)
     testImplementation(libs.junit)
     debugImplementation(libs.androidx.test.core)
     testImplementation(libs.androidx.arch.test.core)

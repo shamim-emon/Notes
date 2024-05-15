@@ -8,7 +8,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import bd.emon.notes.R
 
-
 val NunitoFontFamily = FontFamily(
     listOf(
         Font(R.font.nunito_regular),
@@ -43,8 +42,6 @@ val Typography = Typography(
 //        lineHeight = 27.sp,
 //        letterSpacing = 10.sp
     ),
-
-
 
     /* Other default text styles to override
     bodyLarge = TextStyle(
