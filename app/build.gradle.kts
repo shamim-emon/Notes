@@ -11,6 +11,7 @@ plugins {
 ktlint {
     filter {
         exclude("**/*.md")
+        exclude("**/*.gradle.kts")
     }
     debug.set(true)
     disabledRules.set(setOf("final-newline"))
@@ -104,6 +105,10 @@ dependencies {
     implementation(libs.hilt.android)
     kapt(libs.hilt.compiler)
     kapt(libs.hilt.ext.compiler)
+    implementation(libs.kotlinx.coroutines.android)
+
+
+    testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.junit)
     debugImplementation(libs.androidx.test.core)
     testImplementation(libs.androidx.arch.test.core)
