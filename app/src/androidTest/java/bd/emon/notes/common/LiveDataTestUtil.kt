@@ -1,4 +1,4 @@
-package bd.emon.notes.util
+package bd.emon.notes.common
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer

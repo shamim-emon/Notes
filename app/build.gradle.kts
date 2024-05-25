@@ -74,6 +74,8 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+
+
 }
 
 dependencies {
@@ -116,8 +118,10 @@ dependencies {
     testImplementation(libs.androidx.test.ext.truth)
     testImplementation(libs.robolectric)
     testImplementation(libs.androidx.room.testing)
+    testImplementation(libs.mockito.core)
 
     androidTestImplementation(composeBom)
+    androidTestImplementation(libs.mockito.core)
     androidTestImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.runner)
     androidTestImplementation(libs.androidx.test.core)

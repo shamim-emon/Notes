@@ -4,10 +4,10 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import bd.emon.notes.common.getOrAwaitValue
 import bd.emon.notes.data.NoteDao
 import bd.emon.notes.data.NoteDatabase
 import bd.emon.notes.domain.entity.Note
-import bd.emon.notes.util.getOrAwaitValue
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.runBlocking
 import org.junit.After
@@ -40,7 +40,6 @@ class NoteDaoTest {
     @Test
     fun insert_note_success_note_created() = runBlocking {
         val note = Note(
-            id = 0,
             title = "Note Title",
             content = "Note Content"
         )
@@ -55,7 +54,6 @@ class NoteDaoTest {
     @Test
     fun delete_single_note_success_note_deleted() = runBlocking {
         val note = Note(
-            id = 0,
             title = "Note Title",
             content = "Note Content"
         )
@@ -69,13 +67,11 @@ class NoteDaoTest {
     @Test
     fun delete_all_note_success_all_notes_deleted() = runBlocking {
         val noteOne = Note(
-            id = 0,
             title = "Note1 Title",
             content = "Note1 Content"
         )
 
         val noteTwo = Note(
-            id = 0,
             title = "Note2 Title",
             content = "Note2 Content"
         )
@@ -92,7 +88,6 @@ class NoteDaoTest {
     @Test
     fun update_single_note_success_note_updated() = runBlocking {
         var note = Note(
-            id = 0,
             title = "Note1 Title",
             content = "Note1 Content"
         )
@@ -116,7 +111,6 @@ class NoteDaoTest {
     @Test
     fun fetch_single_note_by_id_success_correct_note_fetched() = runBlocking {
         var note = Note(
-            id = 0,
             title = "Note1 Title",
             content = "Note1 Content"
         )
@@ -133,7 +127,6 @@ class NoteDaoTest {
     @Test
     fun fetch_single_note_by_keyword_in_any_field_success_correct_note_fetched() = runBlocking {
         val note = Note(
-            id = 0,
             title = "Note1 Title",
             content = "Note Content"
         )
