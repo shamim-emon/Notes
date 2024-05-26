@@ -8,4 +8,8 @@ class NoteDataSourceImpl(private val db: NoteDatabase) : NoteDataSource {
     override suspend fun createNote(title: String, content: String) {
         dao.insertNote(Note(id = 0, title = title, content = content))
     }
+
+    override suspend fun editNote(title: String, content: String) {
+        dao.updateNote(Note(id = 0, title = title, content = content))
+    }
 }

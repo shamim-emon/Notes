@@ -4,13 +4,14 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import bd.emon.notes.common.INSERT_ERROR
 import bd.emon.notes.common.Response
 import bd.emon.notes.common.TestDispatcherRule
+import bd.emon.notes.common.UPDATE_ERROR
 import bd.emon.notes.common.any
 import bd.emon.notes.common.capture
 import bd.emon.notes.data.NoteDBRepository
 import bd.emon.notes.data.NoteDBRepositoryImpl
 import bd.emon.notes.data.NoteDataSource
 import bd.emon.notes.domain.entity.Note
-import com.google.common.truth.Truth
+import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
@@ -49,6 +50,7 @@ class NoteDetailsRepositoryUnitTest {
         repository = NoteDBRepositoryImpl(dataSource)
     }
 
+    //region createNote() tests
     @Test
     fun `createNote correct parameters passed to dataSource`() = runTest {
         repository.createNote(title = NOTE_TITLE, content = NOTE_CONTENT)
@@ -56,27 +58,58 @@ class NoteDetailsRepositoryUnitTest {
             capture(stringCaptor),
             capture(stringCaptor)
         )
-        Truth.assertThat(stringCaptor.allValues[0] == NOTE_TITLE).isTrue()
-        Truth.assertThat(stringCaptor.allValues[1] == NOTE_CONTENT).isTrue()
+        assertThat(stringCaptor.allValues[0] == NOTE_TITLE).isTrue()
+        assertThat(stringCaptor.allValues[1] == NOTE_CONTENT).isTrue()
     }
 
     @Test
     fun `createNote on success return success response`() = runTest {
         createNoteSuccessResponse()
         val response = repository.createNote(title = NOTE_TITLE, content = NOTE_CONTENT)
-        Truth.assertThat(response == Response.Success<Note>(null)).isTrue()
+        assertThat(response == Response.Success<Note>(null)).isTrue()
     }
 
     @Test
-    fun `createNote on Error return exception response`() = runTest {
+    fun `createNote on Error return error response`() = runTest {
         createNoteErrorResponse()
         val response = repository.createNote(title = NOTE_TITLE, content = NOTE_CONTENT)
-        Truth.assertThat(response == Response.Error(INSERT_ERROR)).isTrue()
+        assertThat(response == Response.Error(INSERT_ERROR)).isTrue()
+    }
+    //endregion
+
+    //region editNote() tests
+    @Test
+    fun `editNote correct parameters passed to dataSource`() = runTest {
+        repository.editNote(title = NOTE_TITLE, content = NOTE_CONTENT)
+
+        verify(
+            dataSource,
+            times(1)
+        ).editNote(
+            capture(stringCaptor),
+            capture(stringCaptor)
+        )
+
+        assertThat(stringCaptor.allValues[0] == NOTE_TITLE).isTrue()
+        assertThat(stringCaptor.allValues[0] == NOTE_TITLE).isTrue()
     }
 
+    @Test
+    fun `editNote on success return success response`() = runTest {
+        editNoteSuccessResponse()
+        val response = repository.editNote(title = NOTE_TITLE, content = NOTE_CONTENT)
+        assertThat(response == Response.Success<Note>(null)).isTrue()
+    }
+
+    @Test
+    fun `editNote on error return error response`() = runTest {
+        editNoteErrorResponse()
+        val response = repository.editNote(title = NOTE_TITLE, content = NOTE_CONTENT)
+        assertThat(response == Response.Error(UPDATE_ERROR)).isTrue()
+    }
+    //endregion
 
     //region helper functions
-
     private suspend fun createNoteSuccessResponse() {
         `when`(
             dataSource.createNote(
@@ -94,6 +127,26 @@ class NoteDetailsRepositoryUnitTest {
             )
         ).thenAnswer {
             throw (Exception(INSERT_ERROR))
+        }
+    }
+
+    private suspend fun editNoteSuccessResponse() {
+        `when`(
+            dataSource.editNote(
+                any(String::class.java),
+                any(String::class.java)
+            )
+        ).thenReturn(Unit)
+    }
+
+    private suspend fun editNoteErrorResponse() {
+        `when`(
+            dataSource.editNote(
+                any(String::class.java),
+                any(String::class.java)
+            )
+        ).thenAnswer {
+            throw (Exception(UPDATE_ERROR))
         }
     }
     //endregion

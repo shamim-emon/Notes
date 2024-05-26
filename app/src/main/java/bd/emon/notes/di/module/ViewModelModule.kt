@@ -2,6 +2,7 @@ package bd.emon.notes.di.module
 
 import bd.emon.notes.data.NoteDBRepository
 import bd.emon.notes.domain.usecase.CreateNoteUseCase
+import bd.emon.notes.domain.usecase.EditNoteUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -13,6 +14,10 @@ import kotlinx.coroutines.Dispatchers
 object ViewModelModule {
     @Provides
     fun provideCreateNoteUseCase(repository: NoteDBRepository) = CreateNoteUseCase(repository)
+
+    @Provides
+    fun provideEditNoteUseCase(repository: NoteDBRepository) = EditNoteUseCase(repository)
+
     @Provides
     fun provideCoroutineDispatcher() = Dispatchers.IO
 }
