@@ -11,26 +11,27 @@ open class NoteDBRepositoryImpl(private val noteDataSource: NoteDataSource) : No
         } catch (e: Exception) {
             Response.Error(e.localizedMessage)
         }
-
     }
 
     override suspend fun editNote(title: String, content: String): Response {
         return try {
             noteDataSource.editNote(title = title, content = content)
             Response.Success<Note>(null)
-        } catch (e:Exception){
+        } catch (e: Exception) {
             Response.Error(e.localizedMessage)
         }
-
     }
 
     override suspend fun getNoteById(id: Int): Response {
         return try {
             val note = noteDataSource.getNoteById(id)
             Response.Success(note)
-        }catch (e:Exception){
+        } catch (e: Exception) {
             Response.Error(e.localizedMessage)
         }
+    }
 
+    override suspend fun getNotes(): Response {
+        TODO("Not yet implemented")
     }
 }

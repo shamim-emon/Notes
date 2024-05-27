@@ -9,9 +9,9 @@ class EditNoteUseCase(
     lateinit var title: String
     lateinit var content: String
 
-    suspend fun editNote(title: String, content: String) : Response {
+    suspend fun editNote(title: String, content: String): Response {
         this.title = title
         this.content = content
-       return repository.editNote(title = title,content = content)
+        return repository.editNote(title = title, content = content)
     }
 }

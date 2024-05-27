@@ -20,10 +20,8 @@ object RepositoryModule {
         NoteDatabase(appContext)
 
     @Provides
-    fun provideNoteDataSource(db: NoteDatabase) : NoteDataSource = NoteDataSourceImpl(db)
+    fun provideNoteDataSource(db: NoteDatabase): NoteDataSource = NoteDataSourceImpl(db)
 
     @Provides
-    fun provideNoteDBRepository(dataSource: NoteDataSource): NoteDBRepository =
-        NoteDBRepositoryImpl(dataSource)
-
+    fun provideNoteDBRepository(dataSource: NoteDataSource): NoteDBRepository = NoteDBRepositoryImpl(dataSource)
 }

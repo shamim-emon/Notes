@@ -7,4 +7,5 @@ interface NoteDBRepository {
     suspend fun editNote(title: String, content: String): Response
 
     suspend fun getNoteById(id: Int): Response
+    suspend fun getNotes(): Response
 }
