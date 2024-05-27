@@ -4,7 +4,6 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import bd.emon.notes.common.getOrAwaitValue
 import bd.emon.notes.data.NoteDao
 import bd.emon.notes.data.NoteDatabase
 import bd.emon.notes.domain.entity.Note
@@ -45,7 +44,7 @@ class NoteDaoTest {
         )
 
         noteDao.insertNote(note)
-        val result = noteDao.getNotes().getOrAwaitValue()
+        val result = noteDao.getNotes()
         assertThat(result.size == 1).isTrue()
         assertThat(result[0].title == note.title).isTrue()
         assertThat(result[0].content == note.content).isTrue()
@@ -58,9 +57,9 @@ class NoteDaoTest {
             content = "Note Content"
         )
         noteDao.insertNote(note)
-        var result = noteDao.getNotes().getOrAwaitValue()
+        var result = noteDao.getNotes()
         noteDao.deleteNote(result[0].id)
-        result = noteDao.getNotes().getOrAwaitValue()
+        result = noteDao.getNotes()
         assertThat(result.size == 1).isFalse()
     }
 
@@ -77,11 +76,11 @@ class NoteDaoTest {
         )
         noteDao.insertNote(noteOne)
         noteDao.insertNote(noteTwo)
-        var result = noteDao.getNotes().getOrAwaitValue()
+        var result = noteDao.getNotes()
         assertThat(result.size == 2).isTrue()
 
         noteDao.deleteAllNote()
-        result = noteDao.getNotes().getOrAwaitValue()
+        result = noteDao.getNotes()
         assertThat(result.isEmpty()).isTrue()
     }
 
@@ -94,7 +93,7 @@ class NoteDaoTest {
 
         noteDao.insertNote(note)
 
-        var result = noteDao.getNotes().getOrAwaitValue()
+        var result = noteDao.getNotes()
         assertThat(result[0].title == "Note1 Title").isTrue()
         assertThat(result[0].content == "Note1 Content").isTrue()
 
@@ -103,7 +102,7 @@ class NoteDaoTest {
         note.content = "New Content"
 
         noteDao.updateNote(note)
-        result = noteDao.getNotes().getOrAwaitValue()
+        result = noteDao.getNotes()
         assertThat(result.size == 1).isTrue()
         assertThat(result[0].title == "New Title").isTrue()
         assertThat(result[0].content == "New Content").isTrue()
@@ -117,10 +116,10 @@ class NoteDaoTest {
 
         noteDao.insertNote(note)
 
-        var result = noteDao.getNotes().getOrAwaitValue()
+        var result = noteDao.getNotes()
         val id = result[0].id
 
-        note = noteDao.getNoteById(id).getOrAwaitValue()
+        note = noteDao.getNoteById(id)
         assertThat(note.id == id).isTrue()
     }
 
@@ -133,14 +132,14 @@ class NoteDaoTest {
         noteDao.insertNote(note)
 
         // search keyword in title
-        var results = noteDao.getNotesByKeyword("Note1 Tit").getOrAwaitValue()
+        var results = noteDao.getNotesByKeyword("Note1 Tit")
 
         results.forEach { note ->
             assertThat(note.title.contains("Note1 Tit")).isTrue()
         }
 
         // search keyword in content
-        results = noteDao.getNotesByKeyword("Cont").getOrAwaitValue()
+        results = noteDao.getNotesByKeyword("Cont")
 
         results.forEach { note ->
             assertThat(note.content.contains("Cont")).isTrue()

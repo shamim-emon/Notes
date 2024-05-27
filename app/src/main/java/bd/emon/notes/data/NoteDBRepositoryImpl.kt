@@ -23,4 +23,14 @@ open class NoteDBRepositoryImpl(private val noteDataSource: NoteDataSource) : No
         }
 
     }
+
+    override suspend fun getNoteById(id: Int): Response {
+        return try {
+            val note = noteDataSource.getNoteById(id)
+            Response.Success(note)
+        }catch (e:Exception){
+            Response.Error(e.localizedMessage)
+        }
+
+    }
 }

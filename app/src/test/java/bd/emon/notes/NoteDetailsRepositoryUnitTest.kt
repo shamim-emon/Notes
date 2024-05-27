@@ -1,6 +1,7 @@
 package bd.emon.notes
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import bd.emon.notes.common.FETCH_ERROR
 import bd.emon.notes.common.INSERT_ERROR
 import bd.emon.notes.common.Response
 import bd.emon.notes.common.TestDispatcherRule
@@ -39,11 +40,15 @@ class NoteDetailsRepositoryUnitTest {
     @get:Rule
     val testDispatcherRule = TestDispatcherRule()
 
+    val NOTE_ID = 1
     val NOTE_TITLE = "Some title"
     val NOTE_CONTENT = "Some content that belongs to your note for demonstration"
 
     @Captor
     lateinit var stringCaptor: ArgumentCaptor<String>
+
+    @Captor
+    lateinit var intCaptor: ArgumentCaptor<Int>
 
     @Before
     fun setUp() {
@@ -109,6 +114,41 @@ class NoteDetailsRepositoryUnitTest {
     }
     //endregion
 
+    //region getNoteById() functions
+    @Test
+    fun `getNoteById correct id passed to dataSource`() = runTest {
+        repository.getNoteById(id = NOTE_ID)
+        verify(dataSource, times(1)).getNoteById(
+            capture(intCaptor)
+        )
+        assertThat(intCaptor.value == NOTE_ID).isTrue()
+    }
+
+    @Test
+    fun `getNoteById on success return success response`() = runTest {
+        getNoteNyIdSuccessResponse()
+        val response = repository.getNoteById(id = NOTE_ID)
+        assertThat(
+            response == Response.Success(
+                Note(
+                    id = NOTE_ID,
+                    title = NOTE_TITLE,
+                    content = NOTE_CONTENT
+                )
+            )
+        ).isTrue()
+    }
+
+    @Test
+    fun `getNoteById on error return error response`() = runTest {
+        getNoteNyIdErrorResponse()
+        val response = repository.getNoteById(id = NOTE_ID)
+        assertThat(
+            response == Response.Error(FETCH_ERROR)
+        ).isTrue()
+    }
+    //endregion
+
     //region helper functions
     private suspend fun createNoteSuccessResponse() {
         `when`(
@@ -148,6 +188,28 @@ class NoteDetailsRepositoryUnitTest {
         ).thenAnswer {
             throw (Exception(UPDATE_ERROR))
         }
+    }
+
+    private suspend fun getNoteNyIdSuccessResponse() {
+        `when`(
+            dataSource.getNoteById(
+                any(Int::class.java)
+            )
+        ).thenReturn(
+            Note(
+                id = NOTE_ID,
+                title = NOTE_TITLE,
+                content = NOTE_CONTENT
+            )
+        )
+    }
+
+    private suspend fun getNoteNyIdErrorResponse() {
+        `when`(
+            dataSource.getNoteById(
+                any(Int::class.java)
+            )
+        ).thenAnswer { throw (Exception(FETCH_ERROR)) }
     }
     //endregion
 }

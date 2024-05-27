@@ -11,6 +11,7 @@ import bd.emon.notes.data.NoteDBRepository
 import bd.emon.notes.domain.entity.Note
 import bd.emon.notes.domain.usecase.CreateNoteUseCase
 import bd.emon.notes.domain.usecase.EditNoteUseCase
+import bd.emon.notes.domain.usecase.GetNoteByIdUseCase
 import bd.emon.notes.presentation.ui.note.NoteDetailsViewModel
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.test.runTest
@@ -32,6 +33,7 @@ class NoteDetailsViewModelUnitTest {
     lateinit var viewModel: NoteDetailsViewModel
     lateinit var createNoteUseCase: CreateNoteUseCase
     lateinit var editNoteUseCase: EditNoteUseCase
+    lateinit var getNoteByIdUseCase: GetNoteByIdUseCase
 
     @Mock
     lateinit var repository: NoteDBRepository
@@ -42,19 +44,25 @@ class NoteDetailsViewModelUnitTest {
     @get:Rule
     val testDispatcherRule = TestDispatcherRule()
 
+    val NOTE_ID = 11
     val NOTE_TITLE = "Some title"
     val NOTE_CONTENT = "Some content that belongs to your note for demonstration"
 
     @Captor
     lateinit var stringCaptor: ArgumentCaptor<String>
 
+    @Captor
+    lateinit var intCaptor: ArgumentCaptor<Int>
+
     @Before
     fun setUp() {
         createNoteUseCase = CreateNoteUseCase(repository)
         editNoteUseCase = EditNoteUseCase(repository)
+        getNoteByIdUseCase = GetNoteByIdUseCase(repository)
         viewModel = NoteDetailsViewModel(
             createNoteUseCase = createNoteUseCase,
             editNoteUseCase = editNoteUseCase,
+            getNoteByIdUseCase = getNoteByIdUseCase,
             dispatcher = testDispatcherRule.testDispatcher
         )
     }
@@ -168,6 +176,7 @@ class NoteDetailsViewModelUnitTest {
         testDispatcherRule.testDispatcher.scheduler.advanceUntilIdle()
         assertThat(viewModel.editNote.value == Response.Success<Note>(null))
     }
+
     @Test
     fun `editNote error return error reponse`() = runTest {
         editNoteErrorResponse()
@@ -175,6 +184,7 @@ class NoteDetailsViewModelUnitTest {
         testDispatcherRule.testDispatcher.scheduler.advanceUntilIdle()
         assertThat(viewModel.editNote.value == Response.Error(UPDATE_ERROR)).isTrue()
     }
+
     @Test
     fun `editNote before execution loadState is true but false after success response`() = runTest {
         editNoteSuccessResponse()
@@ -195,6 +205,57 @@ class NoteDetailsViewModelUnitTest {
         assertThat(viewModel.loadState.value == false).isTrue()
     }
     //endregion
+
+    //region getNoteById()
+    @Test
+    fun `getNoteById correct id passed to useCase`() = runTest {
+        viewModel.getNoteById(id = NOTE_ID)
+        testDispatcherRule.testDispatcher.scheduler.advanceUntilIdle()
+        assertThat(getNoteByIdUseCase.id == NOTE_ID).isTrue()
+    }
+
+    @Test
+    fun `getNoteById correct id passed to repository`() = runTest {
+        viewModel.getNoteById(id = NOTE_ID)
+        testDispatcherRule.testDispatcher.scheduler.advanceUntilIdle()
+        verify(repository, times(1)).getNoteById(capture(intCaptor))
+        assertThat(intCaptor.value == NOTE_ID).isTrue()
+    }
+
+    @Test
+    fun `getNoteById success return success response`() = runTest {
+        getNoteByIdSuccessResponse()
+        viewModel.getNoteById(id = NOTE_ID)
+        testDispatcherRule.testDispatcher.scheduler.advanceUntilIdle()
+        assertThat(
+            viewModel.getNoteById.value == Response.Success(
+                Note(
+                    id = NOTE_ID,
+                    title = NOTE_TITLE,
+                    content = NOTE_CONTENT
+                )
+            )
+        ).isTrue()
+    }
+
+    @Test
+    fun `getNoteById before execution loadState is true but false  after response`() = runTest {
+        getNoteByIdSuccessResponse()
+        viewModel.getNoteById(id = NOTE_ID)
+        assertThat(viewModel.loadState.value == true).isTrue()
+        testDispatcherRule.testDispatcher.scheduler.advanceUntilIdle()
+        assertThat(
+            viewModel.getNoteById.value == Response.Success(
+                Note(
+                    id = NOTE_ID,
+                    title = NOTE_TITLE,
+                    content = NOTE_CONTENT
+                )
+            )
+        ).isTrue()
+        assertThat(viewModel.loadState.value == false).isTrue()
+    }
+    //endregrion
 
     //region helper functions
 
@@ -241,5 +302,16 @@ class NoteDetailsViewModelUnitTest {
             Response.Error(UPDATE_ERROR)
         )
     }
+
+    private suspend fun getNoteByIdSuccessResponse() {
+        `when`(
+            repository.getNoteById(
+                any(Int::class.java)
+            )
+        ).thenReturn(
+            Response.Success(Note(id = NOTE_ID, title = NOTE_TITLE, content = NOTE_CONTENT))
+        )
+    }
+
     //endregion
 }

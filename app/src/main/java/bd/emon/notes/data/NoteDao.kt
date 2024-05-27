@@ -1,6 +1,5 @@
 package bd.emon.notes.data
 
-import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
@@ -14,7 +13,7 @@ interface NoteDao {
     suspend fun insertNote(note: Note)
     @Throws(Exception::class)
     @Query("SELECT * from Note")
-    fun getNotes(): LiveData<List<Note>>
+    fun getNotes(): List<Note>
     @Throws(Exception::class)
     @Query("DELETE FROM Note WHERE id = :id")
     fun deleteNote(id: Int)
@@ -26,8 +25,8 @@ interface NoteDao {
     fun updateNote(note: Note)
     @Throws(Exception::class)
     @Query("SELECT * FROM Note WHERE id = :id")
-    fun getNoteById(id: Int): LiveData<Note>
+    fun getNoteById(id: Int): Note
     @Throws(Exception::class)
     @Query("SELECT * FROM Note WHERE (title LIKE '%' || :keyword || '%') OR (content LIKE '%' || :keyword || '%')  ")
-    fun getNotesByKeyword(keyword: String): LiveData<List<Note>>
+    fun getNotesByKeyword(keyword: String): List<Note>
 }
