@@ -14,6 +14,10 @@ class NoteDataSourceImpl(private val db: NoteDatabase) : NoteDataSource {
     }
 
     override suspend fun getNoteById(id: Int): Note {
-        TODO("Not yet implemented")
+        return dao.getNoteById(id)
+    }
+
+    override suspend fun getNotes(): List<Note> {
+        return dao.getNotes()
     }
 }

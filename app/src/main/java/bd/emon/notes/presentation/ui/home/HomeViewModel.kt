@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import bd.emon.notes.common.Response
 import bd.emon.notes.domain.entity.Note
 import bd.emon.notes.domain.usecase.GetNotesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -17,26 +16,33 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     private val getNotesUseCase: GetNotesUseCase,
     private val dispatcher: CoroutineDispatcher
-): ViewModel() {
+) : ViewModel() {
 
     val loadState: LiveData<Boolean>
         get() = _loadState
     private var _loadState: MutableLiveData<Boolean> = MutableLiveData(false)
 
-    val notes: LiveData<Response>
+    val errorState: LiveData<Exception?>
+        get() = _errorState
+    private var _errorState: MutableLiveData<Exception?> = MutableLiveData()
+
+    val notes: LiveData<List<Note>>
         get() = _notes
-    private var _notes: MutableLiveData<Response> = MutableLiveData()
+    private var _notes: MutableLiveData<List<Note>> = MutableLiveData()
 
     fun getNotes() {
         _loadState.value = true
         viewModelScope.launch {
-            val response = withContext(dispatcher){
-                getNotesUseCase.getNotes()
+            try {
+                val response = withContext(dispatcher) {
+                    getNotesUseCase.getNotes()
+                }
+                _notes.value = response
+                _errorState.value = null
+            } catch (e: Exception) {
+                _errorState.value = e
             }
-            _notes.value = response
             _loadState.value = false
-
         }
     }
-
 }

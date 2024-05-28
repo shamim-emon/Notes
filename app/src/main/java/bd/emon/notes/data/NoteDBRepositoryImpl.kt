@@ -1,5 +1,6 @@
 package bd.emon.notes.data
 
+import android.util.Log
 import bd.emon.notes.common.Response
 import bd.emon.notes.domain.entity.Note
 
@@ -31,7 +32,7 @@ open class NoteDBRepositoryImpl(private val noteDataSource: NoteDataSource) : No
         }
     }
 
-    override suspend fun getNotes(): Response {
-        TODO("Not yet implemented")
+    override suspend fun getNotes(): List<Note> {
+        return noteDataSource.getNotes()
     }
 }
