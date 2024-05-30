@@ -2,7 +2,6 @@ package bd.emon.notes.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import bd.emon.notes.common.INSERT_ERROR
-import bd.emon.notes.common.Response
 import bd.emon.notes.common.TestDispatcherRule
 import bd.emon.notes.common.UPDATE_ERROR
 import bd.emon.notes.common.any
@@ -89,7 +88,7 @@ class NoteDetailsViewModelUnitTest {
     }
 
     @Test
-    fun `createNote on success return success response`() = runTest {
+    fun `createNote on success return Unit`() = runTest {
         viewModel.createNote(title = NOTE_TITLE, content = NOTE_CONTENT)
         createNoteSuccessResponse()
         testDispatcherRule.testDispatcher.scheduler.advanceUntilIdle()
@@ -97,11 +96,24 @@ class NoteDetailsViewModelUnitTest {
             capture(stringCaptor),
             capture(stringCaptor)
         )
-        assertThat(viewModel.createNote.value == Response.Success<Note>(null)).isTrue()
+        assertThat(viewModel.createNote.value == Unit).isTrue()
     }
 
     @Test
-    fun `createNote before execution loadState is true but false after success response `() =
+    fun `createNote on success errorState is null`() = runTest {
+        viewModel.createNote(title = NOTE_TITLE, content = NOTE_CONTENT)
+        createNoteSuccessResponse()
+        testDispatcherRule.testDispatcher.scheduler.advanceUntilIdle()
+        verify(repository, times(1)).createNote(
+            capture(stringCaptor),
+            capture(stringCaptor)
+        )
+        assertThat(viewModel.createNote.value == Unit).isTrue()
+        assertThat(viewModel.errorState.value == null).isTrue()
+    }
+
+    @Test
+    fun `createNote before execution loadState is true but false after success`() =
         runTest {
             viewModel.createNote(title = NOTE_TITLE, content = NOTE_CONTENT)
             assertThat(viewModel.loadState.value == true).isTrue()
@@ -113,16 +125,16 @@ class NoteDetailsViewModelUnitTest {
                 capture(stringCaptor)
             )
 
-            assertThat(viewModel.createNote.value == Response.Success<Note>(null)).isTrue()
+            assertThat(viewModel.createNote.value == Unit).isTrue()
             assertThat(viewModel.loadState.value == false).isTrue()
         }
 
     @Test
-    fun `createNote before execution loadState is true but false after error response `() =
+    fun `createNote before execution loadState is true but false after error `() =
         runTest {
+            createNoteErrorResponse()
             viewModel.createNote(title = NOTE_TITLE, content = NOTE_CONTENT)
             assertThat(viewModel.loadState.value == true).isTrue()
-            createNoteErrorResponse()
             testDispatcherRule.testDispatcher.scheduler.advanceUntilIdle()
 
             verify(repository, times(1)).createNote(
@@ -130,12 +142,12 @@ class NoteDetailsViewModelUnitTest {
                 capture(stringCaptor)
             )
 
-            assertThat(viewModel.createNote.value == Response.Error("Unable to insert Note")).isTrue()
+            assertThat(viewModel.errorState.value!!.localizedMessage == INSERT_ERROR).isTrue()
             assertThat(viewModel.loadState.value == false).isTrue()
         }
 
     @Test
-    fun `createNote on eroor return error response`() = runTest {
+    fun `createNote on error throw Exception`() = runTest {
         viewModel.createNote(title = NOTE_TITLE, content = NOTE_CONTENT)
         createNoteErrorResponse()
         testDispatcherRule.testDispatcher.scheduler.advanceUntilIdle()
@@ -143,7 +155,7 @@ class NoteDetailsViewModelUnitTest {
             capture(stringCaptor),
             capture(stringCaptor)
         )
-        assertThat(viewModel.createNote.value == Response.Error("Unable to insert Note")).isTrue()
+        assertThat(viewModel.errorState.value!!.localizedMessage == INSERT_ERROR).isTrue()
     }
 
     //endregion
@@ -170,38 +182,47 @@ class NoteDetailsViewModelUnitTest {
     }
 
     @Test
-    fun `editNote success return success reponse`() = runTest {
+    fun `editNote success return Unit`() = runTest {
         editNoteSuccessResponse()
         viewModel.editNote(title = NOTE_TITLE, content = NOTE_CONTENT)
         testDispatcherRule.testDispatcher.scheduler.advanceUntilIdle()
-        assertThat(viewModel.editNote.value == Response.Success<Note>(null))
+        assertThat(viewModel.editNote.value == Unit).isTrue()
     }
 
     @Test
-    fun `editNote error return error reponse`() = runTest {
+    fun `editNote success errorState is null`() = runTest {
+        editNoteSuccessResponse()
+        viewModel.editNote(title = NOTE_TITLE, content = NOTE_CONTENT)
+        testDispatcherRule.testDispatcher.scheduler.advanceUntilIdle()
+        assertThat(viewModel.editNote.value == Unit).isTrue()
+        assertThat(viewModel.errorState!!.value == null).isTrue()
+    }
+
+    @Test
+    fun `editNote error return error`() = runTest {
         editNoteErrorResponse()
         viewModel.editNote(title = NOTE_TITLE, content = NOTE_CONTENT)
         testDispatcherRule.testDispatcher.scheduler.advanceUntilIdle()
-        assertThat(viewModel.editNote.value == Response.Error(UPDATE_ERROR)).isTrue()
+        assertThat(viewModel.errorState.value!!.localizedMessage == UPDATE_ERROR).isTrue()
     }
 
     @Test
-    fun `editNote before execution loadState is true but false after success response`() = runTest {
+    fun `editNote before execution loadState is true but false after success`() = runTest {
         editNoteSuccessResponse()
         viewModel.editNote(title = NOTE_TITLE, content = NOTE_CONTENT)
         assertThat(viewModel.loadState.value == true).isTrue()
         testDispatcherRule.testDispatcher.scheduler.advanceUntilIdle()
-        assertThat(viewModel.editNote.value == Response.Success<Note>(null))
+        assertThat(viewModel.editNote.value == Unit).isTrue()
         assertThat(viewModel.loadState.value == false).isTrue()
     }
 
     @Test
-    fun `editNote before execution loadState is true but false after error response`() = runTest {
+    fun `editNote before execution loadState is true but false after error`() = runTest {
         editNoteErrorResponse()
         viewModel.editNote(title = NOTE_TITLE, content = NOTE_CONTENT)
         assertThat(viewModel.loadState.value == true).isTrue()
         testDispatcherRule.testDispatcher.scheduler.advanceUntilIdle()
-        assertThat(viewModel.editNote.value == Response.Success<Note>(null))
+        assertThat(viewModel.errorState.value!!.localizedMessage == UPDATE_ERROR).isTrue()
         assertThat(viewModel.loadState.value == false).isTrue()
     }
     //endregion
@@ -223,39 +244,35 @@ class NoteDetailsViewModelUnitTest {
     }
 
     @Test
-    fun `getNoteById success return success response`() = runTest {
+    fun `getNoteById success return Note`() = runTest {
         getNoteByIdSuccessResponse()
         viewModel.getNoteById(id = NOTE_ID)
         testDispatcherRule.testDispatcher.scheduler.advanceUntilIdle()
         assertThat(
-            viewModel.getNoteById.value == Response.Success(
-                Note(
-                    id = NOTE_ID,
-                    title = NOTE_TITLE,
-                    content = NOTE_CONTENT
-                )
+            viewModel.getNoteById.value == Note(
+                id = NOTE_ID,
+                title = NOTE_TITLE,
+                content = NOTE_CONTENT
             )
         ).isTrue()
     }
 
     @Test
-    fun `getNoteById before execution loadState is true but false  after response`() = runTest {
+    fun `getNoteById before execution loadState is true but false  after success`() = runTest {
         getNoteByIdSuccessResponse()
         viewModel.getNoteById(id = NOTE_ID)
         assertThat(viewModel.loadState.value == true).isTrue()
         testDispatcherRule.testDispatcher.scheduler.advanceUntilIdle()
         assertThat(
-            viewModel.getNoteById.value == Response.Success(
-                Note(
-                    id = NOTE_ID,
-                    title = NOTE_TITLE,
-                    content = NOTE_CONTENT
-                )
+            viewModel.getNoteById.value == Note(
+                id = NOTE_ID,
+                title = NOTE_TITLE,
+                content = NOTE_CONTENT
             )
         ).isTrue()
         assertThat(viewModel.loadState.value == false).isTrue()
     }
-    //endregrion
+    //endregion
 
     //region helper functions
 
@@ -265,9 +282,7 @@ class NoteDetailsViewModelUnitTest {
                 any(String::class.java),
                 any(String::class.java)
             )
-        ).thenReturn(
-            Response.Success<Note>(null)
-        )
+        ).thenReturn(Unit)
     }
 
     private suspend fun createNoteErrorResponse() {
@@ -276,9 +291,7 @@ class NoteDetailsViewModelUnitTest {
                 any(String::class.java),
                 any(String::class.java)
             )
-        ).thenReturn(
-            Response.Error(INSERT_ERROR)
-        )
+        ).thenThrow(RuntimeException(INSERT_ERROR))
     }
 
     private suspend fun editNoteSuccessResponse() {
@@ -287,9 +300,7 @@ class NoteDetailsViewModelUnitTest {
                 any(String::class.java),
                 any(String::class.java)
             )
-        ).thenReturn(
-            Response.Success<Note>(null)
-        )
+        ).thenReturn(Unit)
     }
 
     private suspend fun editNoteErrorResponse() {
@@ -298,9 +309,7 @@ class NoteDetailsViewModelUnitTest {
                 any(String::class.java),
                 any(String::class.java)
             )
-        ).thenReturn(
-            Response.Error(UPDATE_ERROR)
-        )
+        ).thenThrow(RuntimeException(UPDATE_ERROR))
     }
 
     private suspend fun getNoteByIdSuccessResponse() {
@@ -309,7 +318,7 @@ class NoteDetailsViewModelUnitTest {
                 any(Int::class.java)
             )
         ).thenReturn(
-            Response.Success(Note(id = NOTE_ID, title = NOTE_TITLE, content = NOTE_CONTENT))
+            Note(id = NOTE_ID, title = NOTE_TITLE, content = NOTE_CONTENT)
         )
     }
 

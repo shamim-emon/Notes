@@ -3,7 +3,6 @@ package bd.emon.notes
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import bd.emon.notes.common.FETCH_ERROR
 import bd.emon.notes.common.INSERT_ERROR
-import bd.emon.notes.common.Response
 import bd.emon.notes.common.TestDispatcherRule
 import bd.emon.notes.common.UPDATE_ERROR
 import bd.emon.notes.common.any
@@ -68,17 +67,20 @@ class NoteDetailsRepositoryUnitTest {
     }
 
     @Test
-    fun `createNote on success return success response`() = runTest {
+    fun `createNote on success return Unit`() = runTest {
         createNoteSuccessResponse()
         val response = repository.createNote(title = NOTE_TITLE, content = NOTE_CONTENT)
-        assertThat(response == Response.Success<Note>(null)).isTrue()
+        assertThat(response == Unit).isTrue()
     }
 
     @Test
-    fun `createNote on Error return error response`() = runTest {
-        createNoteErrorResponse()
-        val response = repository.createNote(title = NOTE_TITLE, content = NOTE_CONTENT)
-        assertThat(response == Response.Error(INSERT_ERROR)).isTrue()
+    fun `createNote on error throw exception`() = runTest {
+        try {
+            createNoteErrorResponse()
+            repository.createNote(title = NOTE_TITLE, content = NOTE_CONTENT)
+        } catch (e: Exception) {
+            assertThat(e).hasMessageThat().contains(INSERT_ERROR)
+        }
     }
     //endregion
 
@@ -103,14 +105,17 @@ class NoteDetailsRepositoryUnitTest {
     fun `editNote on success return success response`() = runTest {
         editNoteSuccessResponse()
         val response = repository.editNote(title = NOTE_TITLE, content = NOTE_CONTENT)
-        assertThat(response == Response.Success<Note>(null)).isTrue()
+        assertThat(response == Unit).isTrue()
     }
 
     @Test
-    fun `editNote on error return error response`() = runTest {
+    fun `editNote on error throw exception `() = runTest {
         editNoteErrorResponse()
-        val response = repository.editNote(title = NOTE_TITLE, content = NOTE_CONTENT)
-        assertThat(response == Response.Error(UPDATE_ERROR)).isTrue()
+        try {
+            repository.editNote(title = NOTE_TITLE, content = NOTE_CONTENT)
+        } catch (e: Exception) {
+            assertThat(e).hasMessageThat().contains(UPDATE_ERROR)
+        }
     }
     //endregion
 
@@ -125,27 +130,26 @@ class NoteDetailsRepositoryUnitTest {
     }
 
     @Test
-    fun `getNoteById on success return success response`() = runTest {
+    fun `getNoteById on success return Note`() = runTest {
         getNoteNyIdSuccessResponse()
         val response = repository.getNoteById(id = NOTE_ID)
         assertThat(
-            response == Response.Success(
-                Note(
-                    id = NOTE_ID,
-                    title = NOTE_TITLE,
-                    content = NOTE_CONTENT
-                )
+            response == Note(
+                id = NOTE_ID,
+                title = NOTE_TITLE,
+                content = NOTE_CONTENT
             )
         ).isTrue()
     }
 
     @Test
-    fun `getNoteById on error return error response`() = runTest {
+    fun `getNoteById on error throws Exception`() = runTest {
         getNoteNyIdErrorResponse()
-        val response = repository.getNoteById(id = NOTE_ID)
-        assertThat(
-            response == Response.Error(FETCH_ERROR)
-        ).isTrue()
+        try {
+            repository.getNoteById(id = NOTE_ID)
+        } catch (e: Exception) {
+            assertThat(e).hasMessageThat().contains(FETCH_ERROR)
+        }
     }
     //endregion
 
@@ -165,9 +169,7 @@ class NoteDetailsRepositoryUnitTest {
                 any(String::class.java),
                 any(String::class.java)
             )
-        ).thenAnswer {
-            throw (Exception(INSERT_ERROR))
-        }
+        ).thenThrow(RuntimeException(INSERT_ERROR))
     }
 
     private suspend fun editNoteSuccessResponse() {
@@ -209,7 +211,7 @@ class NoteDetailsRepositoryUnitTest {
             dataSource.getNoteById(
                 any(Int::class.java)
             )
-        ).thenAnswer { throw (Exception(FETCH_ERROR)) }
+        ).thenThrow(RuntimeException(FETCH_ERROR))
     }
     //endregion
 }

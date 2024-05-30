@@ -1,6 +1,5 @@
 package bd.emon.notes.domain.usecase
 
-import bd.emon.notes.common.Response
 import bd.emon.notes.data.NoteDBRepository
 
 class CreateNoteUseCase(
@@ -9,7 +8,7 @@ class CreateNoteUseCase(
 
     lateinit var title: String
     lateinit var content: String
-    suspend fun createNote(title: String, content: String): Response {
+    suspend fun createNote(title: String, content: String) {
         this.title = title
         this.content = content
         return repository.createNote(title = title, content = content)
