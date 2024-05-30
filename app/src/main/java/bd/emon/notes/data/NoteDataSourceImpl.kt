@@ -20,4 +20,8 @@ class NoteDataSourceImpl(private val db: NoteDatabase) : NoteDataSource {
     override suspend fun getNotes(): List<Note> {
         return dao.getNotes()
     }
+
+    override suspend fun deleteNote(note: Note) {
+        dao.deleteNote(id = note.id)
+    }
 }

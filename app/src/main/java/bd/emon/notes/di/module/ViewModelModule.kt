@@ -2,6 +2,7 @@ package bd.emon.notes.di.module
 
 import bd.emon.notes.data.NoteDBRepository
 import bd.emon.notes.domain.usecase.CreateNoteUseCase
+import bd.emon.notes.domain.usecase.DeleteNoteUseCase
 import bd.emon.notes.domain.usecase.EditNoteUseCase
 import bd.emon.notes.domain.usecase.GetNoteByIdUseCase
 import bd.emon.notes.domain.usecase.GetNotesUseCase
@@ -25,6 +26,9 @@ object ViewModelModule {
 
     @Provides
     fun provideGetNotesUseCase(repository: NoteDBRepository) = GetNotesUseCase(repository)
+
+    @Provides
+    fun provideDeleteNoteUseCase(repository: NoteDBRepository) = DeleteNoteUseCase(repository)
 
     @Provides
     fun provideCoroutineDispatcher() = Dispatchers.IO

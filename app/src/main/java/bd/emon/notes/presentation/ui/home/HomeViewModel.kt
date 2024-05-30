@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import bd.emon.notes.domain.entity.Note
+import bd.emon.notes.domain.usecase.DeleteNoteUseCase
 import bd.emon.notes.domain.usecase.GetNotesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -15,6 +16,7 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val getNotesUseCase: GetNotesUseCase,
+    private val deleteNoteUseCase: DeleteNoteUseCase,
     private val dispatcher: CoroutineDispatcher
 ) : ViewModel() {
 
@@ -30,6 +32,10 @@ class HomeViewModel @Inject constructor(
         get() = _notes
     private var _notes: MutableLiveData<List<Note>> = MutableLiveData()
 
+    val deleteNote: LiveData<Unit>
+        get() = _deleteNote
+    private var _deleteNote: MutableLiveData<Unit> = MutableLiveData()
+
     fun getNotes() {
         _loadState.value = true
         viewModelScope.launch {
@@ -43,6 +49,21 @@ class HomeViewModel @Inject constructor(
                 _errorState.value = e
             }
             _loadState.value = false
+        }
+    }
+
+    fun deleteNote(note: Note) {
+        _loadState.value = true
+        viewModelScope.launch {
+            try {
+                val reponse = deleteNoteUseCase.deleteNote(note = note)
+                _deleteNote.value = reponse
+                _errorState = MutableLiveData()
+            } catch (e: Exception) {
+                _errorState.value = e
+            } finally {
+                _loadState.value = false
+            }
         }
     }
 }

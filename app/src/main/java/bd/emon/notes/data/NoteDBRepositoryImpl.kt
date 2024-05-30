@@ -18,4 +18,8 @@ open class NoteDBRepositoryImpl(private val noteDataSource: NoteDataSource) : No
     override suspend fun getNotes(): List<Note> {
         return noteDataSource.getNotes()
     }
+
+    override suspend fun deleteNote(note: Note) {
+        noteDataSource.deleteNote(note = note)
+    }
 }
