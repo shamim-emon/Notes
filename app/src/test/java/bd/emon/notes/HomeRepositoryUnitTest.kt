@@ -1,6 +1,8 @@
 package bd.emon.notes
 
+import bd.emon.notes.common.DELETE_ERROR
 import bd.emon.notes.common.FETCH_ERROR
+import bd.emon.notes.common.any
 import bd.emon.notes.data.NoteDBRepository
 import bd.emon.notes.data.NoteDBRepositoryImpl
 import bd.emon.notes.data.NoteDataSource
@@ -10,8 +12,6 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.ArgumentCaptor
-import org.mockito.Captor
 import org.mockito.Mock
 import org.mockito.Mockito.`when`
 import org.mockito.junit.MockitoJUnitRunner
@@ -34,8 +34,7 @@ class HomeRepositoryUnitTest {
         Note(id = 7, title = "Note7", content = "This is content of note 7"),
     )
 
-    @Captor
-    lateinit var stringCaptor: ArgumentCaptor<String>
+    val note = Note(id = 1, title = "Note1", content = "This is content of note 1")
 
     @Before
     fun setUp() {
@@ -59,7 +58,27 @@ class HomeRepositoryUnitTest {
             assertThat(e).hasMessageThat().contains(FETCH_ERROR)
         }
     }
+
     //endregion
+    //region deleteNote
+    @Test
+    fun `deleteNote on success return unit`() = runTest {
+        deleteNoteSuccess()
+        val response = repository.deleteNote(note = note)
+        assertThat(response == Unit).isTrue()
+    }
+
+    @Test
+    fun `deleteNote on error throw exception`() = runTest {
+        try {
+            deleteNoteError()
+            repository.deleteNote(note = note)
+        } catch (e: Exception) {
+            assertThat(e).hasMessageThat().contains(DELETE_ERROR)
+        }
+    }
+    //endregion
+
     //region helper functions
     private suspend fun getNotesSuccess() {
         `when`(
@@ -71,6 +90,18 @@ class HomeRepositoryUnitTest {
         `when`(
             dataSource.getNotes()
         ).thenThrow(RuntimeException(FETCH_ERROR))
+    }
+
+    private suspend fun deleteNoteSuccess() {
+        `when`(
+            dataSource.deleteNote(any(Note::class.java))
+        ).thenReturn(Unit)
+    }
+
+    private suspend fun deleteNoteError() {
+        `when`(
+            dataSource.deleteNote(any(Note::class.java))
+        ).thenThrow(RuntimeException(DELETE_ERROR))
     }
     //endregion
 }
