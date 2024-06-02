@@ -56,8 +56,10 @@ class HomeViewModel @Inject constructor(
         _loadState.value = true
         viewModelScope.launch {
             try {
-                val reponse = deleteNoteUseCase.deleteNote(note = note)
-                _deleteNote.value = reponse
+                val response = withContext(dispatcher) {
+                    deleteNoteUseCase.deleteNote(note = note)
+                }
+                _deleteNote.value = response
                 _errorState = MutableLiveData()
             } catch (e: Exception) {
                 _errorState.value = e

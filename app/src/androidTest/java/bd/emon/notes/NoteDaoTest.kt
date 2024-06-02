@@ -124,26 +124,53 @@ class NoteDaoTest {
     }
 
     @Test
-    fun fetch_single_note_by_keyword_in_any_field_success_correct_note_fetched() = runBlocking {
+    fun fetch_single_note_by_keyword_in_title() = runBlocking {
         val note = Note(
-            title = "Note1 Title",
-            content = "Note Content"
+            title = "My dynamic notebook",
+            content = "Some Dynamic content1."
         )
         noteDao.insertNote(note)
+        val noteTwo = Note(
+            title = "My dynamic cool notebook",
+            content = "Some Dynamic cool content2."
+        )
+        noteDao.insertNote(noteTwo)
+        val noteRandom = Note(
+            title = "My random cool notebook",
+            content = "Some  cool content."
+        )
+        noteDao.insertNote(noteRandom)
 
-        // search keyword in title
-        var results = noteDao.getNotesByKeyword("Note1 Tit")
+        var results = noteDao.getNotesByKeyword("nam")
+        assertThat(results.size).isEqualTo(2)
 
-        results.forEach { note ->
-            assertThat(note.title.contains("Note1 Tit")).isTrue()
-        }
+        assertThat(results[0].title.contains("nam")).isTrue()
+        assertThat(results[1].title.contains("nam")).isTrue()
+    }
 
-        // search keyword in content
-        results = noteDao.getNotesByKeyword("Cont")
+    @Test
+    fun fetch_single_note_by_keyword_in_content() = runBlocking {
+        val note = Note(
+            title = "My Journal 22",
+            content = "I liked death note manga a lot.... "
+        )
+        noteDao.insertNote(note)
+        val noteTwo = Note(
+            title = "My Journal 23",
+            content = "Hunter x Hunter was another great manga..."
+        )
+        noteDao.insertNote(noteTwo)
+        val noteRandom = Note(
+            title = "My Journal 24",
+            content = "These days I don't get to follow any tv shows because of time..."
+        )
+        noteDao.insertNote(noteRandom)
 
-        results.forEach { note ->
-            assertThat(note.content.contains("Cont")).isTrue()
-        }
+        var results = noteDao.getNotesByKeyword("Manga")
+        assertThat(results.size).isEqualTo(2)
+
+        assertThat(results[0].content.contains("manga")).isTrue()
+        assertThat(results[1].content.contains("manga")).isTrue()
     }
 
     @After

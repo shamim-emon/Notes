@@ -1,4 +1,4 @@
-package bd.emon.notes.presentation.ui.home
+package bd.emon.notes.presentation.ui.search
 
 import androidx.compose.runtime.Composable
 

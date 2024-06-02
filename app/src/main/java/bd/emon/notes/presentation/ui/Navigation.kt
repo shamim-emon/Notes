@@ -9,8 +9,8 @@ import bd.emon.notes.presentation.ui.Destination.HOME_ROUTE
 import bd.emon.notes.presentation.ui.Destination.NOTE_ROUTE
 import bd.emon.notes.presentation.ui.Destination.SEARCH_ROUTE
 import bd.emon.notes.presentation.ui.home.HomeRoute
-import bd.emon.notes.presentation.ui.home.SearchRoute
 import bd.emon.notes.presentation.ui.note.NoteDetailsRoute
+import bd.emon.notes.presentation.ui.search.SearchRoute
 
 object Destination {
     const val HOME_ROUTE = "home"

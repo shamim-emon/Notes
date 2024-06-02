@@ -1,4 +1,4 @@
-package bd.emon.notes.presentation.ui.home
+package bd.emon.notes.presentation.ui.search
 
 import android.content.res.Configuration
 import androidx.compose.foundation.BorderStroke
@@ -37,6 +37,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import bd.emon.notes.R
+import bd.emon.notes.presentation.ui.home.ContextBackground
 import bd.emon.notes.presentation.ui.theme.NotesTheme
 import bd.emon.notes.presentation.ui.theme.stronglyDeemphasizedAlpha
 
