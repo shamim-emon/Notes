@@ -24,4 +24,8 @@ class NoteDataSourceImpl(private val db: NoteDatabase) : NoteDataSource {
     override suspend fun deleteNote(note: Note) {
         dao.deleteNote(id = note.id)
     }
+
+    override suspend fun searchNote(keyword: String): List<Note> {
+        return dao.getNotesByKeyword(keyword = keyword)
+    }
 }

@@ -8,4 +8,5 @@ interface NoteDBRepository {
     suspend fun getNoteById(id: Int): Note
     suspend fun getNotes(): List<Note>
     suspend fun deleteNote(note: Note)
+    suspend fun searchNote(keyword: String): List<Note>
 }

@@ -22,4 +22,8 @@ open class NoteDBRepositoryImpl(private val noteDataSource: NoteDataSource) : No
     override suspend fun deleteNote(note: Note) {
         noteDataSource.deleteNote(note = note)
     }
+
+    override suspend fun searchNote(keyword: String): List<Note> {
+        return noteDataSource.searchNote(keyword = keyword)
+    }
 }

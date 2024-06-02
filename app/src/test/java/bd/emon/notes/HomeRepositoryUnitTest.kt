@@ -45,8 +45,8 @@ class HomeRepositoryUnitTest {
     @Test
     fun `getNotes on success return notes`() = runTest {
         getNotesSuccess()
-        val _notes = repository.getNotes()
-        assertThat(_notes == notes).isTrue()
+        val response = repository.getNotes()
+        assertThat(response == notes).isTrue()
     }
 
     @Test
