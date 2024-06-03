@@ -19,6 +19,13 @@ val NunitoFontFamily = FontFamily(
 // Set of Material typography styles to start with
 val Typography = Typography(
 
+    headlineSmall = TextStyle(
+        fontFamily = FontFamily.Default,
+        fontWeight = FontWeight.SemiBold,
+        lineHeight = 28.sp,
+        fontSize = 24.sp
+    ),
+
     titleLarge = TextStyle(
         fontFamily = FontFamily.Default,
         fontWeight = FontWeight.Light,

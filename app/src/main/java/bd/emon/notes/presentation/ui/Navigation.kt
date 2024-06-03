@@ -1,6 +1,7 @@
 package bd.emon.notes.presentation.ui
 
 import androidx.compose.runtime.Composable
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -10,6 +11,7 @@ import bd.emon.notes.presentation.ui.Destination.NOTE_ROUTE
 import bd.emon.notes.presentation.ui.Destination.SEARCH_ROUTE
 import bd.emon.notes.presentation.ui.home.HomeRoute
 import bd.emon.notes.presentation.ui.note.NoteDetailsRoute
+import bd.emon.notes.presentation.ui.note.NoteDetailsViewModel
 import bd.emon.notes.presentation.ui.search.SearchRoute
 
 object Destination {

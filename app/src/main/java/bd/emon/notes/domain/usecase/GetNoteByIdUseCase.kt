@@ -9,6 +9,6 @@ class GetNoteByIdUseCase(
     var id: Int = -1
     suspend fun getNoteById(id: Int): Note {
         this.id = id
-       return repository.getNoteById(id = id)
+        return repository.getNoteById(id = id)
     }
 }

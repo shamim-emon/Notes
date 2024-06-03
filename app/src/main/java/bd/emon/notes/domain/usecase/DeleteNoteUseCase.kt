@@ -6,8 +6,8 @@ import bd.emon.notes.domain.entity.Note
 class DeleteNoteUseCase(
     private val repository: NoteDBRepository
 ) {
-    lateinit var note :Note
-    suspend fun deleteNote(note: Note){
+    lateinit var note: Note
+    suspend fun deleteNote(note: Note) {
         this.note = note
         repository.deleteNote(note = note)
     }

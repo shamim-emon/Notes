@@ -5,11 +5,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.hilt.navigation.compose.hiltViewModel
 
 @Composable
 fun NoteDetailsRoute(
     onBackPressed: () -> Unit
 ) {
+    val noteDetailsViewModel: NoteDetailsViewModel = hiltViewModel()
     var readOnlyState by remember {
         mutableStateOf(false)
     }
