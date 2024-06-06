@@ -24,12 +24,30 @@ fun NoteDetailsRoute(
         mutableStateOf(noteId != NO_ID)
     }
 
+    var newNoteState by remember {
+        mutableStateOf(noteId == NO_ID)
+    }
+
     val note by viewModel.getNoteById.observeAsState()
-    val loadState by viewModel.loadState.observeAsState()
+    val loadState by viewModel.loadState.observeAsState(false)
     val errorState by viewModel.errorState.observeAsState()
 
     var noteIdState by rememberSaveable {
         mutableIntStateOf(noteId)
+    }
+
+    val onSavePressed: (String, String) -> Unit = { title, content ->
+        if (newNoteState) {
+            viewModel.createNote(title = title, content = content)
+        } else {
+            viewModel.editNote(title = title, content = content)
+        }
+        newNoteState = false
+        readOnlyState = true
+    }
+
+    val onEditPressed: () -> Unit = {
+        readOnlyState = false
     }
 
     LaunchedEffect(key1 = noteIdState) {
@@ -43,10 +61,9 @@ fun NoteDetailsRoute(
         noteTitle = note?.title ?: "",
         noteContent = note?.content ?: "",
         readOnly = readOnlyState,
+        loading = loadState,
         onBackPressed = onBackPressed,
-        onSavePressed = {
-            readOnlyState = true
-        },
-        onEditPressed = { readOnlyState = false }
+        onSavePressed = onSavePressed,
+        onEditPressed = onEditPressed
     )
 }

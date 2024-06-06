@@ -2,10 +2,12 @@ package bd.emon.notes.presentation.ui.note
 
 import android.annotation.SuppressLint
 import android.content.res.Configuration
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -13,6 +15,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material.icons.filled.Save
 import androidx.compose.material.icons.outlined.Edit
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -24,16 +27,19 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import bd.emon.notes.R
 import bd.emon.notes.presentation.ui.theme.NotesTheme
+import bd.emon.notes.presentation.ui.theme.disabledAlpha
 import bd.emon.notes.presentation.ui.theme.stronglyDeemphasizedAlpha
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -44,8 +50,9 @@ fun NoteDetailsScreen(
     noteTitle: String,
     noteContent: String,
     readOnly: Boolean,
+    loading: Boolean,
     onBackPressed: () -> Unit,
-    onSavePressed: () -> Unit,
+    onSavePressed: (String, String) -> Unit,
     onEditPressed: () -> Unit
 ) {
     var notTileState by remember {
@@ -56,6 +63,14 @@ fun NoteDetailsScreen(
         mutableStateOf(noteContent)
     }
 
+    var saveButtonEnabled by remember {
+        mutableStateOf(notTileState.isNotEmpty() && notContentState.isNotEmpty())
+    }
+
+    LaunchedEffect(key1 = notTileState, key2 = notContentState) {
+        saveButtonEnabled = notTileState.isNotEmpty() && notContentState.isNotEmpty()
+    }
+
     Surface(modifier = modifier.fillMaxSize()) {
         Scaffold(
             topBar = {
@@ -63,77 +78,92 @@ fun NoteDetailsScreen(
                     modifier = Modifier,
                     title = title,
                     readOnly = readOnly,
+                    saveButtonEnabled = saveButtonEnabled,
                     onBackPressed = onBackPressed,
                     onEditPressed = onEditPressed,
-                    onSavePressed = onSavePressed
+                    onSavePressed = { onSavePressed.invoke(notTileState, notContentState) }
                 )
             },
             content = { contentPadding ->
-                Column(
+                Box(
                     modifier = Modifier
                         .padding(contentPadding)
                         .fillMaxSize()
                         .verticalScroll(rememberScrollState())
                 ) {
 
-                    TextField(
-                        readOnly = readOnly,
-                        value = notTileState,
-                        onValueChange = { notTileState = it },
-                        modifier = Modifier
-                            .padding(all = 16.dp)
-                            .wrapContentHeight(),
-                        textStyle = MaterialTheme.typography.displaySmall,
-                        colors = TextFieldDefaults.colors(
-                            unfocusedContainerColor = MaterialTheme.colorScheme.background,
-                            focusedContainerColor = MaterialTheme.colorScheme.background,
-                            cursorColor = MaterialTheme.colorScheme.onBackground,
-                            focusedIndicatorColor = MaterialTheme.colorScheme.background,
-                            unfocusedIndicatorColor = MaterialTheme.colorScheme.background,
-                        ),
-                        placeholder = {
-                            Text(
-                                stringResource(R.string.note_title_hint),
-                                color = MaterialTheme.colorScheme.onSurface.copy(
-                                    stronglyDeemphasizedAlpha
-                                ),
-                                style = MaterialTheme.typography.displaySmall
-                            )
-                        }
-                    )
+                    if (loading) {
+                        CircularProgressIndicator(
+                            modifier = Modifier
+                                .align(Alignment.Center)
+                                .width(64.dp),
+                            color = MaterialTheme.colorScheme.secondary,
+                            trackColor = MaterialTheme.colorScheme.surfaceVariant,
+                        )
+                    }
 
-                    TextField(
-                        readOnly = readOnly,
-                        value = notContentState,
-                        onValueChange = { notContentState = it },
-                        modifier = Modifier
-                            .padding(
-                                top = 37.dp,
-                                start = 16.dp,
-                                end = 16.dp,
-                                bottom = 16.dp
-                            )
-                            .wrapContentHeight()
-                            .fillMaxWidth(),
-                        textStyle = MaterialTheme.typography.titleLarge,
-                        colors = TextFieldDefaults.colors(
-                            unfocusedContainerColor = MaterialTheme.colorScheme.background,
-                            focusedContainerColor = MaterialTheme.colorScheme.background,
-                            cursorColor = MaterialTheme.colorScheme.onBackground,
-                            focusedIndicatorColor = MaterialTheme.colorScheme.background,
-                            unfocusedIndicatorColor = MaterialTheme.colorScheme.background,
-                        ),
-                        placeholder = {
-                            Text(
-                                stringResource(R.string.note_content_hint),
-                                color = MaterialTheme.colorScheme.onSurface.copy(
-                                    stronglyDeemphasizedAlpha
-                                ),
-                                style = MaterialTheme.typography.titleLarge
-                            )
-                        }
+                    Column {
+                        TextField(
+                            readOnly = readOnly,
+                            value = notTileState,
+                            onValueChange = {
+                                notTileState = it
+                            },
+                            modifier = Modifier
+                                .padding(all = 16.dp)
+                                .wrapContentHeight(),
+                            textStyle = MaterialTheme.typography.displaySmall,
+                            colors = TextFieldDefaults.colors(
+                                unfocusedContainerColor = MaterialTheme.colorScheme.background,
+                                focusedContainerColor = MaterialTheme.colorScheme.background,
+                                cursorColor = MaterialTheme.colorScheme.onBackground,
+                                focusedIndicatorColor = MaterialTheme.colorScheme.background,
+                                unfocusedIndicatorColor = MaterialTheme.colorScheme.background,
+                            ),
+                            placeholder = {
+                                Text(
+                                    stringResource(R.string.note_title_hint),
+                                    color = MaterialTheme.colorScheme.onSurface.copy(
+                                        stronglyDeemphasizedAlpha
+                                    ),
+                                    style = MaterialTheme.typography.displaySmall
+                                )
+                            }
+                        )
 
-                    )
+                        TextField(
+                            readOnly = readOnly,
+                            value = notContentState,
+                            onValueChange = { notContentState = it },
+                            modifier = Modifier
+                                .padding(
+                                    top = 37.dp,
+                                    start = 16.dp,
+                                    end = 16.dp,
+                                    bottom = 16.dp
+                                )
+                                .wrapContentHeight()
+                                .fillMaxWidth(),
+                            textStyle = MaterialTheme.typography.titleLarge,
+                            colors = TextFieldDefaults.colors(
+                                unfocusedContainerColor = MaterialTheme.colorScheme.background,
+                                focusedContainerColor = MaterialTheme.colorScheme.background,
+                                cursorColor = MaterialTheme.colorScheme.onBackground,
+                                focusedIndicatorColor = MaterialTheme.colorScheme.background,
+                                unfocusedIndicatorColor = MaterialTheme.colorScheme.background,
+                            ),
+                            placeholder = {
+                                Text(
+                                    stringResource(R.string.note_content_hint),
+                                    color = MaterialTheme.colorScheme.onSurface.copy(
+                                        stronglyDeemphasizedAlpha
+                                    ),
+                                    style = MaterialTheme.typography.titleLarge
+                                )
+                            }
+
+                        )
+                    }
                 }
             }
         )
@@ -163,8 +193,9 @@ private fun NoteScreenViewModePreview() {
                 noteTitle = "Dummy note with Multiple line support to check its limit",
                 noteContent = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
                 readOnly = true,
+                loading = false,
                 onBackPressed = {},
-                onSavePressed = {},
+                onSavePressed = { _, _ -> },
                 onEditPressed = {}
             )
         }
@@ -177,6 +208,7 @@ fun NoteDetailsAppBar(
     modifier: Modifier = Modifier,
     title: String = "",
     readOnly: Boolean,
+    saveButtonEnabled: Boolean,
     onEditPressed: () -> Unit,
     onBackPressed: () -> Unit,
     onSavePressed: () -> Unit
@@ -221,14 +253,17 @@ fun NoteDetailsAppBar(
 
                 else -> {
                     IconButton(
-                        onClick = onSavePressed,
-                        modifier = Modifier.padding(4.dp)
+                        onClick = {
+                            onSavePressed.invoke()
+                        },
+                        modifier = Modifier.padding(4.dp),
+                        enabled = saveButtonEnabled
                     ) {
                         Icon(
                             Icons.Default.Save,
                             contentDescription = null,
                             tint = MaterialTheme.colorScheme.onSurface.copy(
-                                stronglyDeemphasizedAlpha
+                                if (saveButtonEnabled) stronglyDeemphasizedAlpha else disabledAlpha
                             )
                         )
                     }
