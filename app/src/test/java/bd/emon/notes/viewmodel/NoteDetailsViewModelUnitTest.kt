@@ -163,7 +163,7 @@ class NoteDetailsViewModelUnitTest {
     //region EditNote() tests
     @Test
     fun `editNote correct parameters passed to useCase`() = runTest {
-        viewModel.editNote(title = NOTE_TITLE, content = NOTE_CONTENT)
+        viewModel.editNote(id = NOTE_ID, title = NOTE_TITLE, content = NOTE_CONTENT)
         testDispatcherRule.testDispatcher.scheduler.advanceUntilIdle()
         assertThat(editNoteUseCase.title == NOTE_TITLE).isTrue()
         assertThat(editNoteUseCase.content == NOTE_CONTENT).isTrue()
@@ -171,12 +171,14 @@ class NoteDetailsViewModelUnitTest {
 
     @Test
     fun `editNote correct parameters passed to repository`() = runTest {
-        viewModel.editNote(title = NOTE_TITLE, content = NOTE_CONTENT)
+        viewModel.editNote(id = NOTE_ID, title = NOTE_TITLE, content = NOTE_CONTENT)
         testDispatcherRule.testDispatcher.scheduler.advanceUntilIdle()
         verify(repository, times(1)).editNote(
+            capture(intCaptor),
             capture(stringCaptor),
             capture(stringCaptor)
         )
+        assertThat(intCaptor.value == NOTE_ID).isTrue()
         assertThat(stringCaptor.allValues[0] == NOTE_TITLE).isTrue()
         assertThat(stringCaptor.allValues[1] == NOTE_CONTENT).isTrue()
     }
@@ -184,7 +186,7 @@ class NoteDetailsViewModelUnitTest {
     @Test
     fun `editNote success return Unit`() = runTest {
         editNoteSuccessResponse()
-        viewModel.editNote(title = NOTE_TITLE, content = NOTE_CONTENT)
+        viewModel.editNote(id = NOTE_ID, title = NOTE_TITLE, content = NOTE_CONTENT)
         testDispatcherRule.testDispatcher.scheduler.advanceUntilIdle()
         assertThat(viewModel.editNote.value == Unit).isTrue()
     }
@@ -192,7 +194,7 @@ class NoteDetailsViewModelUnitTest {
     @Test
     fun `editNote success errorState is null`() = runTest {
         editNoteSuccessResponse()
-        viewModel.editNote(title = NOTE_TITLE, content = NOTE_CONTENT)
+        viewModel.editNote(id = NOTE_ID, title = NOTE_TITLE, content = NOTE_CONTENT)
         testDispatcherRule.testDispatcher.scheduler.advanceUntilIdle()
         assertThat(viewModel.editNote.value == Unit).isTrue()
         assertThat(viewModel.errorState!!.value == null).isTrue()
@@ -201,7 +203,7 @@ class NoteDetailsViewModelUnitTest {
     @Test
     fun `editNote error return error`() = runTest {
         editNoteErrorResponse()
-        viewModel.editNote(title = NOTE_TITLE, content = NOTE_CONTENT)
+        viewModel.editNote(id = NOTE_ID, title = NOTE_TITLE, content = NOTE_CONTENT)
         testDispatcherRule.testDispatcher.scheduler.advanceUntilIdle()
         assertThat(viewModel.errorState.value!!.localizedMessage == UPDATE_ERROR).isTrue()
     }
@@ -209,7 +211,7 @@ class NoteDetailsViewModelUnitTest {
     @Test
     fun `editNote before execution loadState is true but false after success`() = runTest {
         editNoteSuccessResponse()
-        viewModel.editNote(title = NOTE_TITLE, content = NOTE_CONTENT)
+        viewModel.editNote(id = NOTE_ID, title = NOTE_TITLE, content = NOTE_CONTENT)
         assertThat(viewModel.loadState.value == true).isTrue()
         testDispatcherRule.testDispatcher.scheduler.advanceUntilIdle()
         assertThat(viewModel.editNote.value == Unit).isTrue()
@@ -219,7 +221,7 @@ class NoteDetailsViewModelUnitTest {
     @Test
     fun `editNote before execution loadState is true but false after error`() = runTest {
         editNoteErrorResponse()
-        viewModel.editNote(title = NOTE_TITLE, content = NOTE_CONTENT)
+        viewModel.editNote(id = NOTE_ID, title = NOTE_TITLE, content = NOTE_CONTENT)
         assertThat(viewModel.loadState.value == true).isTrue()
         testDispatcherRule.testDispatcher.scheduler.advanceUntilIdle()
         assertThat(viewModel.errorState.value!!.localizedMessage == UPDATE_ERROR).isTrue()
@@ -297,6 +299,7 @@ class NoteDetailsViewModelUnitTest {
     private suspend fun editNoteSuccessResponse() {
         `when`(
             repository.editNote(
+                any(Int::class.java),
                 any(String::class.java),
                 any(String::class.java)
             )
@@ -306,6 +309,7 @@ class NoteDetailsViewModelUnitTest {
     private suspend fun editNoteErrorResponse() {
         `when`(
             repository.editNote(
+                any(Int::class.java),
                 any(String::class.java),
                 any(String::class.java)
             )

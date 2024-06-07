@@ -40,7 +40,7 @@ fun NoteDetailsRoute(
         if (newNoteState) {
             viewModel.createNote(title = title, content = content)
         } else {
-            viewModel.editNote(title = title, content = content)
+            viewModel.editNote(id = note!!.id, title = title, content = content)
         }
         newNoteState = false
         readOnlyState = true

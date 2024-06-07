@@ -87,24 +87,26 @@ class NoteDetailsRepositoryUnitTest {
     //region editNote() tests
     @Test
     fun `editNote correct parameters passed to dataSource`() = runTest {
-        repository.editNote(title = NOTE_TITLE, content = NOTE_CONTENT)
+        repository.editNote(id = NOTE_ID, title = NOTE_TITLE, content = NOTE_CONTENT)
 
         verify(
             dataSource,
             times(1)
         ).editNote(
+            capture(intCaptor),
             capture(stringCaptor),
             capture(stringCaptor)
         )
 
+        assertThat(intCaptor.value == NOTE_ID).isTrue()
         assertThat(stringCaptor.allValues[0] == NOTE_TITLE).isTrue()
-        assertThat(stringCaptor.allValues[0] == NOTE_TITLE).isTrue()
+        assertThat(stringCaptor.allValues[1] == NOTE_CONTENT).isTrue()
     }
 
     @Test
     fun `editNote on success return success response`() = runTest {
         editNoteSuccessResponse()
-        val response = repository.editNote(title = NOTE_TITLE, content = NOTE_CONTENT)
+        val response = repository.editNote(id = NOTE_ID, title = NOTE_TITLE, content = NOTE_CONTENT)
         assertThat(response == Unit).isTrue()
     }
 
@@ -112,7 +114,7 @@ class NoteDetailsRepositoryUnitTest {
     fun `editNote on error throw exception `() = runTest {
         editNoteErrorResponse()
         try {
-            repository.editNote(title = NOTE_TITLE, content = NOTE_CONTENT)
+            repository.editNote(id = NOTE_ID, title = NOTE_TITLE, content = NOTE_CONTENT)
         } catch (e: Exception) {
             assertThat(e).hasMessageThat().contains(UPDATE_ERROR)
         }
@@ -175,6 +177,7 @@ class NoteDetailsRepositoryUnitTest {
     private suspend fun editNoteSuccessResponse() {
         `when`(
             dataSource.editNote(
+                any(Int::class.java),
                 any(String::class.java),
                 any(String::class.java)
             )
@@ -184,6 +187,7 @@ class NoteDetailsRepositoryUnitTest {
     private suspend fun editNoteErrorResponse() {
         `when`(
             dataSource.editNote(
+                any(Int::class.java),
                 any(String::class.java),
                 any(String::class.java)
             )

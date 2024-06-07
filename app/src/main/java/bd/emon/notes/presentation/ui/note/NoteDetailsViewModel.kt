@@ -59,12 +59,12 @@ class NoteDetailsViewModel @Inject constructor(
         }
     }
 
-    fun editNote(title: String, content: String) {
+    fun editNote(id: Int, title: String, content: String) {
         _loadState.value = true
         viewModelScope.launch {
             try {
                 val response = withContext(dispatcher) {
-                    editNoteUseCase.editNote(title = title, content = content)
+                    editNoteUseCase.editNote(id = id, title = title, content = content)
                 }
                 _editNote.value = response
                 _errorState = MutableLiveData(null)

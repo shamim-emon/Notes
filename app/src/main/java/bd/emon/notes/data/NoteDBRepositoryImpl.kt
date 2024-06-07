@@ -7,8 +7,8 @@ open class NoteDBRepositoryImpl(private val noteDataSource: NoteDataSource) : No
         noteDataSource.createNote(title = title, content = content)
     }
 
-    override suspend fun editNote(title: String, content: String) {
-        noteDataSource.editNote(title = title, content = content)
+    override suspend fun editNote(id: Int, title: String, content: String) {
+        noteDataSource.editNote(id = id, title = title, content = content)
     }
 
     override suspend fun getNoteById(id: Int): Note {

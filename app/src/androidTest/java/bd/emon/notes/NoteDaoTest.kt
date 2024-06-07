@@ -97,13 +97,16 @@ class NoteDaoTest {
         assertThat(result[0].title == "Note1 Title").isTrue()
         assertThat(result[0].content == "Note1 Content").isTrue()
 
-        note = result[0]
+        val noteId = result[0].id
         note.title = "New Title"
         note.content = "New Content"
 
-        noteDao.updateNote(note)
+        noteDao.updateNote(
+            Note(id = noteId, title = "New Title", content = "New Content")
+        )
         result = noteDao.getNotes()
         assertThat(result.size == 1).isTrue()
+        assertThat(result[0].id == noteId).isTrue()
         assertThat(result[0].title == "New Title").isTrue()
         assertThat(result[0].content == "New Content").isTrue()
     }
