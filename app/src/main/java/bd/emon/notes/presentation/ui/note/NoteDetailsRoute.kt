@@ -1,5 +1,6 @@
 package bd.emon.notes.presentation.ui.note
 
+import android.widget.Toast
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -9,6 +10,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import bd.emon.notes.R
@@ -19,31 +21,32 @@ fun NoteDetailsRoute(
     noteId: Int,
     onBackPressed: () -> Unit
 ) {
+    val context = LocalContext.current
     val viewModel: NoteDetailsViewModel = hiltViewModel()
     var readOnlyState by remember {
         mutableStateOf(noteId != NO_ID)
     }
 
-    var newNoteState by remember {
-        mutableStateOf(noteId == NO_ID)
-    }
-
     val note by viewModel.getNoteById.observeAsState()
     val loadState by viewModel.loadState.observeAsState(false)
     val errorState by viewModel.errorState.observeAsState()
+    var successMessage by remember {
+        mutableStateOf("")
+    }
 
     var noteIdState by rememberSaveable {
         mutableIntStateOf(noteId)
     }
 
-    val onSavePressed: (String, String) -> Unit = { title, content ->
-        if (newNoteState) {
+    val onSavePressed: (Int, String, String) -> Unit = { id, title, content ->
+        if (noteIdState == NO_ID) {
             viewModel.createNote(title = title, content = content)
+            successMessage = "Successfully created note"
         } else {
-            viewModel.editNote(id = note!!.id, title = title, content = content)
+            viewModel.editNote(id = id, title = title, content = content)
+            successMessage = "Successfully updated note"
         }
-        newNoteState = false
-        readOnlyState = true
+        onBackPressed.invoke()
     }
 
     val onEditPressed: () -> Unit = {
@@ -56,8 +59,15 @@ fun NoteDetailsRoute(
         }
     }
 
+    LaunchedEffect(key1 = successMessage) {
+        if (successMessage != "") {
+            Toast.makeText(context, successMessage, Toast.LENGTH_SHORT).show()
+        }
+    }
+
     NoteDetailsScreen(
         title = stringResource(id = R.string.app_name),
+        noteId = noteIdState,
         noteTitle = note?.title ?: "",
         noteContent = note?.content ?: "",
         readOnly = readOnlyState,

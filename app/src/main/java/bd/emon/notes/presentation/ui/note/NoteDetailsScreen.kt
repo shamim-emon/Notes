@@ -38,6 +38,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import bd.emon.notes.R
+import bd.emon.notes.common.NO_ID
 import bd.emon.notes.presentation.ui.theme.NotesTheme
 import bd.emon.notes.presentation.ui.theme.disabledAlpha
 import bd.emon.notes.presentation.ui.theme.stronglyDeemphasizedAlpha
@@ -47,12 +48,13 @@ import bd.emon.notes.presentation.ui.theme.stronglyDeemphasizedAlpha
 fun NoteDetailsScreen(
     modifier: Modifier = Modifier,
     title: String,
+    noteId: Int,
     noteTitle: String,
     noteContent: String,
     readOnly: Boolean,
     loading: Boolean,
     onBackPressed: () -> Unit,
-    onSavePressed: (String, String) -> Unit,
+    onSavePressed: (Int, String, String) -> Unit,
     onEditPressed: () -> Unit
 ) {
     var notTileState by remember {
@@ -81,7 +83,7 @@ fun NoteDetailsScreen(
                     saveButtonEnabled = saveButtonEnabled,
                     onBackPressed = onBackPressed,
                     onEditPressed = onEditPressed,
-                    onSavePressed = { onSavePressed.invoke(notTileState, notContentState) }
+                    onSavePressed = { onSavePressed.invoke(noteId, notTileState, notContentState) }
                 )
             },
             content = { contentPadding ->
@@ -190,12 +192,13 @@ private fun NoteScreenViewModePreview() {
         ) {
             NoteDetailsScreen(
                 title = "My Note",
+                noteId = NO_ID,
                 noteTitle = "Dummy note with Multiple line support to check its limit",
                 noteContent = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
                 readOnly = true,
                 loading = false,
                 onBackPressed = {},
-                onSavePressed = { _, _ -> },
+                onSavePressed = { _, _, _ -> },
                 onEditPressed = {}
             )
         }

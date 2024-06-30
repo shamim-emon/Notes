@@ -34,6 +34,9 @@ fun NotesNavHost(
                 onSettingPressed = {},
                 onAddNotePressed = {
                     navController.navigate(route = "note?id={id}")
+                },
+                onNotePressed = { noteId ->
+                    navController.navigate(route = "note?id=$noteId")
                 }
             )
         }

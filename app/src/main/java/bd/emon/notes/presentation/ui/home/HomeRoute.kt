@@ -13,6 +13,7 @@ fun HomeRoute(
     onSearchPressed: () -> Unit,
     onSettingPressed: () -> Unit,
     onAddNotePressed: () -> Unit,
+    onNotePressed: (Int) -> Unit
 ) {
     val viewModel: HomeViewModel = hiltViewModel()
     val notes by viewModel.notes.observeAsState(emptyList())
@@ -27,6 +28,7 @@ fun HomeRoute(
         onSearchPressed = onSearchPressed,
         onSettingPressed = onSettingPressed,
         onAddNotePressed = onAddNotePressed,
+        onNotePressed = onNotePressed,
         notes = notes
     )
 }

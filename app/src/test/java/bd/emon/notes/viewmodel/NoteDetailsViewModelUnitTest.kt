@@ -165,6 +165,7 @@ class NoteDetailsViewModelUnitTest {
     fun `editNote correct parameters passed to useCase`() = runTest {
         viewModel.editNote(id = NOTE_ID, title = NOTE_TITLE, content = NOTE_CONTENT)
         testDispatcherRule.testDispatcher.scheduler.advanceUntilIdle()
+        assertThat(editNoteUseCase.id == NOTE_ID).isTrue()
         assertThat(editNoteUseCase.title == NOTE_TITLE).isTrue()
         assertThat(editNoteUseCase.content == NOTE_CONTENT).isTrue()
     }

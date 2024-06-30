@@ -11,6 +11,7 @@ class EditNoteUseCase(
     lateinit var content: String
 
     suspend fun editNote(id: Int, title: String, content: String) {
+        this.id = id
         this.title = title
         this.content = content
         repository.editNote(id = id, title = title, content = content)

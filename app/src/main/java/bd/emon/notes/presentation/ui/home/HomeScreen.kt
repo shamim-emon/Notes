@@ -3,6 +3,7 @@ package bd.emon.notes.presentation.ui.home
 import android.annotation.SuppressLint
 import android.content.res.Configuration
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -46,6 +47,7 @@ fun HomeScreen(
     onSearchPressed: () -> Unit,
     onSettingPressed: () -> Unit,
     onAddNotePressed: () -> Unit,
+    onNotePressed: (Int) -> Unit,
     notes: List<Note>
 ) {
     Surface(modifier = modifier.fillMaxSize()) {
@@ -71,7 +73,8 @@ fun HomeScreen(
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(innerPadding),
-                        notes = notes
+                        notes = notes,
+                        onNotePressed = onNotePressed
                     )
                 }
             },
@@ -110,6 +113,7 @@ private fun HomeScreenPreview() {
                 onSearchPressed = {},
                 onSettingPressed = {},
                 onAddNotePressed = {},
+                onNotePressed = {},
                 notes = emptyList()
             )
         }
@@ -189,7 +193,8 @@ fun ContextBackground(
 @Composable
 fun Thumbnail(
     modifier: Modifier = Modifier,
-    note: Note
+    note: Note,
+    onThumbNailPressed: (Int) -> Unit
 ) {
     Card(
         colors = CardDefaults.cardColors(
@@ -198,6 +203,7 @@ fun Thumbnail(
         modifier = modifier
             .fillMaxWidth()
             .height(200.dp)
+            .clickable(onClick = { onThumbNailPressed.invoke(note.id) })
 
     ) {
         Text(
@@ -243,7 +249,8 @@ private fun NoteListPreview() {
                         Note(id = 2, title = "Note2", content = "This is content of note 2"),
                         Note(id = 3, title = "Note3", content = "This is content of note 3"),
                         Note(id = 4, title = "Note4", content = "This is content of note 4")
-                    )
+                    ),
+                    onNotePressed = {}
                 )
             }
         }
@@ -253,7 +260,8 @@ private fun NoteListPreview() {
 @Composable
 fun NoteList(
     modifier: Modifier = Modifier,
-    notes: List<Note>
+    notes: List<Note>,
+    onNotePressed: (Int) -> Unit
 ) {
 
     Column(
@@ -266,7 +274,10 @@ fun NoteList(
         ) {
             notes.forEach {
                 item {
-                    Thumbnail(note = it)
+                    Thumbnail(
+                        note = it,
+                        onThumbNailPressed = onNotePressed
+                    )
                 }
             }
         }
