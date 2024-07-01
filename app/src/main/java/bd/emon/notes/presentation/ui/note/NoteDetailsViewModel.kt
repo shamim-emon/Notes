@@ -22,6 +22,7 @@ class NoteDetailsViewModel @Inject constructor(
     private val dispatcher: CoroutineDispatcher
 ) : ViewModel() {
 
+
     val loadState: LiveData<Boolean>
         get() = _loadState
     private var _loadState: MutableLiveData<Boolean> = MutableLiveData(false)
@@ -39,8 +40,13 @@ class NoteDetailsViewModel @Inject constructor(
     private var _editNote: MutableLiveData<Unit> = MutableLiveData()
 
     val getNoteById: LiveData<Note>
-        get() = _getNoteById
-    private var _getNoteById: MutableLiveData<Note> = MutableLiveData()
+        get() = _currentNote
+
+    private var _currentNote: MutableLiveData<Note> = MutableLiveData()
+
+    fun modifyNote(note: Note){
+        _currentNote.value = note
+    }
 
     fun createNote(title: String, content: String) {
         _loadState.value = true
@@ -82,7 +88,7 @@ class NoteDetailsViewModel @Inject constructor(
             val response = withContext(dispatcher) {
                 getNoteByIdUseCase.getNoteById(id)
             }
-            _getNoteById.value = response
+            _currentNote.value = response
             _loadState.value = false
         }
     }

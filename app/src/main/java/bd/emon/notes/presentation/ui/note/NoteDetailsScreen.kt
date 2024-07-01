@@ -39,6 +39,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import bd.emon.notes.R
 import bd.emon.notes.common.NO_ID
+import bd.emon.notes.domain.entity.Note
 import bd.emon.notes.presentation.ui.theme.NotesTheme
 import bd.emon.notes.presentation.ui.theme.disabledAlpha
 import bd.emon.notes.presentation.ui.theme.stronglyDeemphasizedAlpha
@@ -48,29 +49,22 @@ import bd.emon.notes.presentation.ui.theme.stronglyDeemphasizedAlpha
 fun NoteDetailsScreen(
     modifier: Modifier = Modifier,
     title: String,
-    noteId: Int,
-    noteTitle: String,
-    noteContent: String,
+    note: Note,
     readOnly: Boolean,
     loading: Boolean,
     onBackPressed: () -> Unit,
     onSavePressed: (Int, String, String) -> Unit,
-    onEditPressed: () -> Unit
+    onEditPressed: () -> Unit,
+    onModifyNote: (note: Note) -> Unit
 ) {
-    var notTileState by remember {
-        mutableStateOf(noteTitle)
-    }
 
-    var notContentState by remember {
-        mutableStateOf(noteContent)
-    }
 
     var saveButtonEnabled by remember {
-        mutableStateOf(notTileState.isNotEmpty() && notContentState.isNotEmpty())
+        mutableStateOf(note.title.isNotEmpty() && note.content.isNotEmpty())
     }
 
-    LaunchedEffect(key1 = notTileState, key2 = notContentState) {
-        saveButtonEnabled = notTileState.isNotEmpty() && notContentState.isNotEmpty()
+    LaunchedEffect(key1 = note) {
+        saveButtonEnabled = note.title.isNotEmpty() && note.content.isNotEmpty()
     }
 
     Surface(modifier = modifier.fillMaxSize()) {
@@ -83,7 +77,7 @@ fun NoteDetailsScreen(
                     saveButtonEnabled = saveButtonEnabled,
                     onBackPressed = onBackPressed,
                     onEditPressed = onEditPressed,
-                    onSavePressed = { onSavePressed.invoke(noteId, notTileState, notContentState) }
+                    onSavePressed = { onSavePressed.invoke(note.id, note.title, note.content) }
                 )
             },
             content = { contentPadding ->
@@ -107,9 +101,9 @@ fun NoteDetailsScreen(
                     Column {
                         TextField(
                             readOnly = readOnly,
-                            value = notTileState,
+                            value = note.title,
                             onValueChange = {
-                                notTileState = it
+                                onModifyNote.invoke(note.copy(title = it))
                             },
                             modifier = Modifier
                                 .padding(all = 16.dp)
@@ -135,8 +129,10 @@ fun NoteDetailsScreen(
 
                         TextField(
                             readOnly = readOnly,
-                            value = notContentState,
-                            onValueChange = { notContentState = it },
+                            value = note.content,
+                            onValueChange = {
+                                onModifyNote.invoke(note.copy(content = it))
+                            },
                             modifier = Modifier
                                 .padding(
                                     top = 37.dp,
@@ -192,14 +188,17 @@ private fun NoteScreenViewModePreview() {
         ) {
             NoteDetailsScreen(
                 title = "My Note",
-                noteId = NO_ID,
-                noteTitle = "Dummy note with Multiple line support to check its limit",
-                noteContent = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+                note = Note(
+                    id = NO_ID,
+                    title = "Dummy note with Multiple line support to check its limit",
+                    content = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                ),
                 readOnly = true,
                 loading = false,
                 onBackPressed = {},
                 onSavePressed = { _, _, _ -> },
-                onEditPressed = {}
+                onEditPressed = {},
+                onModifyNote = {}
             )
         }
     }

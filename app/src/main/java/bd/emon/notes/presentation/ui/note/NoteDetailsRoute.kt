@@ -15,6 +15,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import bd.emon.notes.R
 import bd.emon.notes.common.NO_ID
+import bd.emon.notes.domain.entity.Note
 
 @Composable
 fun NoteDetailsRoute(
@@ -27,8 +28,8 @@ fun NoteDetailsRoute(
         mutableStateOf(noteId != NO_ID)
     }
 
-    val note by viewModel.getNoteById.observeAsState()
-    val loadState by viewModel.loadState.observeAsState(false)
+    val note by viewModel.getNoteById.observeAsState(initial = Note(NO_ID, "", ""))
+    val loadState by viewModel.loadState.observeAsState(initial = false)
     val errorState by viewModel.errorState.observeAsState()
     var successMessage by remember {
         mutableStateOf("")
@@ -67,13 +68,12 @@ fun NoteDetailsRoute(
 
     NoteDetailsScreen(
         title = stringResource(id = R.string.app_name),
-        noteId = noteIdState,
-        noteTitle = note?.title ?: "",
-        noteContent = note?.content ?: "",
+        note = note,
         readOnly = readOnlyState,
         loading = loadState,
         onBackPressed = onBackPressed,
         onSavePressed = onSavePressed,
-        onEditPressed = onEditPressed
+        onEditPressed = onEditPressed,
+        onModifyNote = { viewModel.modifyNote(it) }
     )
 }
