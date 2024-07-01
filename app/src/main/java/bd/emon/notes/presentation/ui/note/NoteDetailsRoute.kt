@@ -34,6 +34,8 @@ fun NoteDetailsRoute(
     var successMessage by remember {
         mutableStateOf("")
     }
+    val createNoteSuccessMessage = stringResource(R.string.note_create_success)
+    val updateNoteSuccessMessage = stringResource(R.string.note_update_success)
 
     var noteIdState by rememberSaveable {
         mutableIntStateOf(noteId)
@@ -42,10 +44,10 @@ fun NoteDetailsRoute(
     val onSavePressed: (Int, String, String) -> Unit = { id, title, content ->
         if (noteIdState == NO_ID) {
             viewModel.createNote(title = title, content = content)
-            successMessage = "Successfully created note"
+            successMessage = createNoteSuccessMessage
         } else {
             viewModel.editNote(id = id, title = title, content = content)
-            successMessage = "Successfully updated note"
+            successMessage = updateNoteSuccessMessage
         }
         onBackPressed.invoke()
     }
@@ -63,6 +65,12 @@ fun NoteDetailsRoute(
     LaunchedEffect(key1 = successMessage) {
         if (successMessage != "") {
             Toast.makeText(context, successMessage, Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    LaunchedEffect(key1 = errorState) {
+        errorState?.localizedMessage?.let {
+            Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
         }
     }
 

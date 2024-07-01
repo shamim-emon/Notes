@@ -27,7 +27,6 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -58,14 +57,11 @@ fun NoteDetailsScreen(
     onModifyNote: (note: Note) -> Unit
 ) {
 
-
     var saveButtonEnabled by remember {
         mutableStateOf(note.title.isNotEmpty() && note.content.isNotEmpty())
     }
 
-    LaunchedEffect(key1 = note) {
-        saveButtonEnabled = note.title.isNotEmpty() && note.content.isNotEmpty()
-    }
+    saveButtonEnabled = note.title.isNotEmpty() && note.content.isNotEmpty()
 
     Surface(modifier = modifier.fillMaxSize()) {
         Scaffold(

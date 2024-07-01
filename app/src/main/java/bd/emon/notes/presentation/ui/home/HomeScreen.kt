@@ -9,8 +9,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
@@ -202,7 +202,7 @@ fun Thumbnail(
         ),
         modifier = modifier
             .fillMaxWidth()
-            .height(200.dp)
+            .wrapContentHeight()
             .clickable(onClick = { onThumbNailPressed.invoke(note.id) })
 
     ) {
@@ -213,7 +213,7 @@ fun Thumbnail(
                 .fillMaxWidth(),
             textAlign = TextAlign.Center,
             style = MaterialTheme.typography.headlineSmall,
-            maxLines = 3,
+            maxLines = 2,
             overflow = TextOverflow.Ellipsis
         )
     }
