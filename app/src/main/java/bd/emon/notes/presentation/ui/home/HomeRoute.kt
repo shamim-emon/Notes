@@ -11,7 +11,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 @Composable
 fun HomeRoute(
     onSearchPressed: () -> Unit,
-    onSettingPressed: () -> Unit,
     onAddNotePressed: () -> Unit,
     onNotePressed: (Int) -> Unit
 ) {
@@ -26,7 +25,6 @@ fun HomeRoute(
 
     HomeScreen(
         onSearchPressed = onSearchPressed,
-        onSettingPressed = onSettingPressed,
         onAddNotePressed = onAddNotePressed,
         onNotePressed = onNotePressed,
         notes = notes

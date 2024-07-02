@@ -15,7 +15,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.Search
-import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -45,7 +44,6 @@ import bd.emon.notes.presentation.ui.theme.stronglyDeemphasizedAlpha
 fun HomeScreen(
     modifier: Modifier = Modifier,
     onSearchPressed: () -> Unit,
-    onSettingPressed: () -> Unit,
     onAddNotePressed: () -> Unit,
     onNotePressed: (Int) -> Unit,
     notes: List<Note>
@@ -55,8 +53,7 @@ fun HomeScreen(
             topBar = {
                 HomeAppBar(
                     title = stringResource(id = R.string.app_name),
-                    onSearchPressed = onSearchPressed,
-                    onSettingPressed = onSettingPressed
+                    onSearchPressed = onSearchPressed
                 )
             },
             content = { innerPadding ->
@@ -111,7 +108,6 @@ private fun HomeScreenPreview() {
         ) {
             HomeScreen(
                 onSearchPressed = {},
-                onSettingPressed = {},
                 onAddNotePressed = {},
                 onNotePressed = {},
                 notes = emptyList()
@@ -125,8 +121,7 @@ private fun HomeScreenPreview() {
 fun HomeAppBar(
     modifier: Modifier = Modifier,
     title: String,
-    onSearchPressed: () -> Unit,
-    onSettingPressed: () -> Unit,
+    onSearchPressed: () -> Unit
 ) {
     TopAppBar(
         title = {
@@ -143,17 +138,6 @@ fun HomeAppBar(
             ) {
                 Icon(
                     Icons.Outlined.Search,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onSurface.copy(stronglyDeemphasizedAlpha)
-                )
-            }
-
-            IconButton(
-                onClick = onSettingPressed,
-                modifier = Modifier.padding(4.dp)
-            ) {
-                Icon(
-                    Icons.Outlined.Settings,
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.onSurface.copy(stronglyDeemphasizedAlpha)
                 )

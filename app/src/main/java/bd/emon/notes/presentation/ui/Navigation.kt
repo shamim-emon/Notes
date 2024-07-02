@@ -9,6 +9,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import bd.emon.notes.common.NO_ID
 import bd.emon.notes.presentation.ui.Destination.HOME_ROUTE
+import bd.emon.notes.presentation.ui.Destination.NOTE_ROUTE
 import bd.emon.notes.presentation.ui.Destination.SEARCH_ROUTE
 import bd.emon.notes.presentation.ui.home.HomeRoute
 import bd.emon.notes.presentation.ui.note.NoteDetailsRoute
@@ -17,7 +18,7 @@ import bd.emon.notes.presentation.ui.search.SearchRoute
 object Destination {
     const val HOME_ROUTE = "home"
     const val SEARCH_ROUTE = "search"
-    const val NOTE_ROUTE = "note/{id}"
+    const val NOTE_ROUTE = "note?id="
 }
 
 @Composable
@@ -31,12 +32,11 @@ fun NotesNavHost(
         composable(route = HOME_ROUTE) {
             HomeRoute(
                 onSearchPressed = { navController.navigate(route = SEARCH_ROUTE) },
-                onSettingPressed = {},
                 onAddNotePressed = {
-                    navController.navigate(route = "note?id={id}")
+                    navController.navigate(route = "$NOTE_ROUTE{id}")
                 },
                 onNotePressed = { noteId ->
-                    navController.navigate(route = "note?id=$noteId")
+                    navController.navigate(route = "$NOTE_ROUTE$noteId")
                 }
             )
         }
