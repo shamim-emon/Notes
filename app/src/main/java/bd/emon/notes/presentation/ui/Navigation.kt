@@ -59,7 +59,9 @@ fun NotesNavHost(
             val noteId = it.arguments!!.getInt("id")
             NoteDetailsRoute(
                 noteId = noteId,
-                onBackPressed = { navController.navigateUp() }
+                onBackPressed = {
+                    navController.navigateUp()
+                }
             )
         }
     }

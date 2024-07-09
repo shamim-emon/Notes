@@ -16,6 +16,7 @@ fun HomeRoute(
 ) {
     val viewModel: HomeViewModel = hiltViewModel()
     val notes by viewModel.notes.observeAsState(emptyList())
+    val loadState by viewModel.loadState.observeAsState(initial = true)
     var isScreenLoaded by remember { mutableStateOf(false) }
 
     if (!isScreenLoaded) {
@@ -25,8 +26,15 @@ fun HomeRoute(
 
     HomeScreen(
         onSearchPressed = onSearchPressed,
-        onAddNotePressed = onAddNotePressed,
-        onNotePressed = onNotePressed,
-        notes = notes
+        onAddNotePressed = {
+            onAddNotePressed.invoke()
+            isScreenLoaded = false
+        },
+        onNotePressed = {
+            onNotePressed.invoke(it)
+            isScreenLoaded = false
+        },
+        notes = notes,
+        loadState = loadState
     )
 }

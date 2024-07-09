@@ -2,6 +2,7 @@ package bd.emon.notes.presentation.ui.note
 
 import android.annotation.SuppressLint
 import android.content.res.Configuration
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,8 +14,10 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
-import androidx.compose.material.icons.filled.Save
 import androidx.compose.material.icons.outlined.Edit
+import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material.icons.outlined.Save
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -23,6 +26,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
@@ -33,6 +37,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -56,12 +61,52 @@ fun NoteDetailsScreen(
     onEditPressed: () -> Unit,
     onModifyNote: (note: Note) -> Unit
 ) {
+    var showDiscardChangesDialog by remember {
+        mutableStateOf(false)
+    }
 
+    val discardChangesIfReadOnly = {
+        if (readOnly) {
+            onBackPressed.invoke()
+        } else {
+            showDiscardChangesDialog = true
+        }
+    }
     var saveButtonEnabled by remember {
         mutableStateOf(note.title.isNotEmpty() && note.content.isNotEmpty())
     }
 
     saveButtonEnabled = note.title.isNotEmpty() && note.content.isNotEmpty()
+
+    var showSaveNoteDialog by remember {
+        mutableStateOf(false)
+    }
+
+    if (showSaveNoteDialog) {
+        NoteAlertDialog(
+            onDismissRequest = { showSaveNoteDialog = false },
+            onConfirmation = {
+                onSavePressed.invoke(note.id, note.title, note.content)
+                showSaveNoteDialog = false
+            },
+            dialogTitle = stringResource(id = R.string.dialog_save_note_title)
+        )
+    }
+
+    if (showDiscardChangesDialog) {
+        NoteAlertDialog(
+            onDismissRequest = { showDiscardChangesDialog = false },
+            onConfirmation = {
+                showDiscardChangesDialog = false
+                onBackPressed.invoke()
+            },
+            dialogTitle = stringResource(id = R.string.dialog_discard_note_title)
+        )
+    }
+
+    BackHandler(enabled = true, onBack = {
+        discardChangesIfReadOnly.invoke()
+    })
 
     Surface(modifier = modifier.fillMaxSize()) {
         Scaffold(
@@ -71,9 +116,9 @@ fun NoteDetailsScreen(
                     title = title,
                     readOnly = readOnly,
                     saveButtonEnabled = saveButtonEnabled,
-                    onBackPressed = onBackPressed,
+                    onBackPressed = { discardChangesIfReadOnly.invoke() },
                     onEditPressed = onEditPressed,
-                    onSavePressed = { onSavePressed.invoke(note.id, note.title, note.content) }
+                    onSavePressed = { showSaveNoteDialog = true }
                 )
             },
             content = { contentPadding ->
@@ -258,7 +303,7 @@ fun NoteDetailsAppBar(
                         enabled = saveButtonEnabled
                     ) {
                         Icon(
-                            Icons.Default.Save,
+                            Icons.Outlined.Save,
                             contentDescription = null,
                             tint = MaterialTheme.colorScheme.onSurface.copy(
                                 if (saveButtonEnabled) stronglyDeemphasizedAlpha else disabledAlpha
@@ -269,4 +314,79 @@ fun NoteDetailsAppBar(
             }
         }
     )
+}
+
+@Composable
+fun NoteAlertDialog(
+    onDismissRequest: () -> Unit,
+    onConfirmation: () -> Unit,
+    dialogTitle: String,
+    icon: ImageVector = Icons.Outlined.Info,
+) {
+    AlertDialog(
+        title = {
+            Text(
+                text = dialogTitle,
+                style = MaterialTheme.typography.headlineSmall
+            )
+        },
+        icon = {
+            Icon(icon, contentDescription = null)
+        },
+        onDismissRequest = {
+            onDismissRequest()
+        },
+        confirmButton = {
+            TextButton(
+                onClick = {
+                    onConfirmation()
+                }
+            ) {
+                Text(
+                    text = stringResource(id = R.string.dialog_confirm_button_title),
+                    style = MaterialTheme.typography.bodyLarge
+                )
+            }
+        },
+        dismissButton = {
+            TextButton(
+                onClick = {
+                    onDismissRequest()
+                }
+            ) {
+                Text(
+                    text = stringResource(id = R.string.dialog_dismiss_button_title),
+                    style = MaterialTheme.typography.bodyLarge
+                )
+            }
+        }
+    )
+}
+
+@Preview(
+    name = "AlertDialog light theme",
+    showBackground = true,
+    uiMode = Configuration.UI_MODE_NIGHT_YES
+)
+@Preview(
+    name = "AlertDialog dark theme",
+    showBackground = true,
+    uiMode = Configuration.UI_MODE_NIGHT_NO
+)
+
+@Composable
+private fun AlertDialogPreview() {
+    NotesTheme {
+        // A surface container using the 'background' color from the theme
+        Surface(
+            modifier = Modifier.fillMaxSize(),
+            color = MaterialTheme.colorScheme.background
+        ) {
+            NoteAlertDialog(
+                onDismissRequest = {},
+                onConfirmation = {},
+                dialogTitle = "Save Changes?"
+            )
+        }
+    }
 }

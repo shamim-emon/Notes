@@ -7,4 +7,8 @@
     <string name="note_content_hint">Start Writing..</string>
     <string name="note_create_success">Successfully created note</string>
     <string name="note_update_success">Successfully updated note</string>
+    <string name="dialog_confirm_button_title">Yes</string>
+    <string name="dialog_dismiss_button_title">No</string>
+    <string name="dialog_save_note_title">Save Changes?</string>
+    <string name="dialog_discard_note_title">Discard Changes?</string>
 </resources>

@@ -50,6 +50,14 @@ val Typography = Typography(
 //        letterSpacing = 10.sp
     ),
 
+    bodyLarge = TextStyle(
+        fontFamily = FontFamily.Default,
+        fontWeight = FontWeight.Normal,
+        fontSize = 16.sp,
+        lineHeight = 24.sp,
+        letterSpacing = 0.5.sp
+    )
+
     /* Other default text styles to override
     bodyLarge = TextStyle(
         fontFamily = FontFamily.Default,

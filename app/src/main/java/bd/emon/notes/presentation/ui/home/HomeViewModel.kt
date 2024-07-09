@@ -22,7 +22,7 @@ class HomeViewModel @Inject constructor(
 
     val loadState: LiveData<Boolean>
         get() = _loadState
-    private var _loadState: MutableLiveData<Boolean> = MutableLiveData(false)
+    private var _loadState: MutableLiveData<Boolean> = MutableLiveData(true)
 
     val errorState: LiveData<Exception?>
         get() = _errorState
