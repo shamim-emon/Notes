@@ -65,7 +65,7 @@ fun HomeScreen(
                 if (loadState) {
                     WaitView(innerPadding = innerPadding)
                 }
-                if (notes.isEmpty()) {
+                if (notes.isEmpty() && !loadState) {
                     ContextBackground(
                         modifier = Modifier
                             .padding(innerPadding)
@@ -73,7 +73,8 @@ fun HomeScreen(
                         backgroundImgId = R.drawable.bg_no_note,
                         backgroundTextId = R.string.first_note
                     )
-                } else {
+                }
+                if (notes.isNotEmpty() && !loadState) {
                     NoteList(
                         modifier = Modifier
                             .fillMaxSize()
@@ -82,7 +83,6 @@ fun HomeScreen(
                         onNotePressed = onNotePressed
                     )
                 }
-
             },
             floatingActionButton = {
                 SmallFloatingActionButton(
