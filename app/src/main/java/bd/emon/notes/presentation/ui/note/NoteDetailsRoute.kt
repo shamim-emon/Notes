@@ -29,7 +29,7 @@ fun NoteDetailsRoute(
     }
 
     val note by viewModel.getNoteById.observeAsState(initial = Note(NO_ID, "", ""))
-    val loadState by viewModel.loadState.observeAsState(initial = false)
+    val loadState by viewModel.loadState.observeAsState(initial = true)
     val errorState by viewModel.errorState.observeAsState()
     var successMessage by remember {
         mutableStateOf("")

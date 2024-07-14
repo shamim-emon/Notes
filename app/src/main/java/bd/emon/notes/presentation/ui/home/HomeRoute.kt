@@ -10,6 +10,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
+import bd.emon.notes.domain.entity.Note
 
 @Composable
 fun HomeRoute(
@@ -29,6 +30,11 @@ fun HomeRoute(
         isScreenLoaded = true
     }
 
+    val onDeleteNotePressed: (Note) -> Unit = { note: Note ->
+        viewModel.deleteNote(note)
+        viewModel.onNoteDeleted(note)
+    }
+
     LaunchedEffect(key1 = errorState) {
         errorState?.localizedMessage?.let {
             Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
@@ -45,6 +51,7 @@ fun HomeRoute(
             onNotePressed.invoke(it)
             isScreenLoaded = false
         },
+        onDeleteNotePressed = onDeleteNotePressed,
         notes = notes,
         loadState = loadState
     )

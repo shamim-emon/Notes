@@ -52,6 +52,10 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    fun onNoteDeleted(note: Note){
+        _notes.value = _notes.value?.filter { it.id!=note.id  }
+    }
+
     fun deleteNote(note: Note) {
         _loadState.value = true
         viewModelScope.launch {

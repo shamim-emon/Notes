@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -18,7 +17,6 @@ import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Save
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -35,7 +33,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
@@ -44,6 +41,7 @@ import androidx.compose.ui.unit.dp
 import bd.emon.notes.R
 import bd.emon.notes.common.NO_ID
 import bd.emon.notes.domain.entity.Note
+import bd.emon.notes.presentation.ui.home.WaitView
 import bd.emon.notes.presentation.ui.theme.NotesTheme
 import bd.emon.notes.presentation.ui.theme.disabledAlpha
 import bd.emon.notes.presentation.ui.theme.stronglyDeemphasizedAlpha
@@ -122,86 +120,80 @@ fun NoteDetailsScreen(
                 )
             },
             content = { contentPadding ->
-                Box(
-                    modifier = Modifier
-                        .padding(contentPadding)
-                        .fillMaxSize()
-                        .verticalScroll(rememberScrollState())
-                ) {
+                if (loading) {
+                    WaitView(innerPadding = contentPadding)
+                } else {
+                    Box(
+                        modifier = Modifier
+                            .padding(contentPadding)
+                            .fillMaxSize()
+                            .verticalScroll(rememberScrollState())
+                    ) {
 
-                    if (loading) {
-                        CircularProgressIndicator(
-                            modifier = Modifier
-                                .align(Alignment.Center)
-                                .width(64.dp),
-                            color = MaterialTheme.colorScheme.secondary,
-                            trackColor = MaterialTheme.colorScheme.surfaceVariant,
-                        )
-                    }
+                        Column {
+                            TextField(
+                                readOnly = readOnly,
+                                value = note.title,
+                                onValueChange = {
+                                    onModifyNote.invoke(note.copy(title = it))
+                                },
+                                modifier = Modifier
+                                    .padding(all = 16.dp)
+                                    .wrapContentHeight(),
+                                textStyle = MaterialTheme.typography.displaySmall,
+                                colors = TextFieldDefaults.colors(
+                                    unfocusedContainerColor = MaterialTheme.colorScheme.background,
+                                    focusedContainerColor = MaterialTheme.colorScheme.background,
+                                    cursorColor = MaterialTheme.colorScheme.onBackground,
+                                    focusedIndicatorColor = MaterialTheme.colorScheme.background,
+                                    unfocusedIndicatorColor = MaterialTheme.colorScheme.background,
+                                ),
+                                placeholder = {
+                                    Text(
+                                        stringResource(R.string.note_title_hint),
+                                        color = MaterialTheme.colorScheme.onSurface.copy(
+                                            stronglyDeemphasizedAlpha
+                                        ),
+                                        style = MaterialTheme.typography.displaySmall
+                                    )
+                                }
+                            )
 
-                    Column {
-                        TextField(
-                            readOnly = readOnly,
-                            value = note.title,
-                            onValueChange = {
-                                onModifyNote.invoke(note.copy(title = it))
-                            },
-                            modifier = Modifier
-                                .padding(all = 16.dp)
-                                .wrapContentHeight(),
-                            textStyle = MaterialTheme.typography.displaySmall,
-                            colors = TextFieldDefaults.colors(
-                                unfocusedContainerColor = MaterialTheme.colorScheme.background,
-                                focusedContainerColor = MaterialTheme.colorScheme.background,
-                                cursorColor = MaterialTheme.colorScheme.onBackground,
-                                focusedIndicatorColor = MaterialTheme.colorScheme.background,
-                                unfocusedIndicatorColor = MaterialTheme.colorScheme.background,
-                            ),
-                            placeholder = {
-                                Text(
-                                    stringResource(R.string.note_title_hint),
-                                    color = MaterialTheme.colorScheme.onSurface.copy(
-                                        stronglyDeemphasizedAlpha
-                                    ),
-                                    style = MaterialTheme.typography.displaySmall
-                                )
-                            }
-                        )
+                            TextField(
+                                readOnly = readOnly,
+                                value = note.content,
+                                onValueChange = {
+                                    onModifyNote.invoke(note.copy(content = it))
+                                },
+                                modifier = Modifier
+                                    .padding(
+                                        top = 37.dp,
+                                        start = 16.dp,
+                                        end = 16.dp,
+                                        bottom = 16.dp
+                                    )
+                                    .wrapContentHeight()
+                                    .fillMaxWidth(),
+                                textStyle = MaterialTheme.typography.titleLarge,
+                                colors = TextFieldDefaults.colors(
+                                    unfocusedContainerColor = MaterialTheme.colorScheme.background,
+                                    focusedContainerColor = MaterialTheme.colorScheme.background,
+                                    cursorColor = MaterialTheme.colorScheme.onBackground,
+                                    focusedIndicatorColor = MaterialTheme.colorScheme.background,
+                                    unfocusedIndicatorColor = MaterialTheme.colorScheme.background,
+                                ),
+                                placeholder = {
+                                    Text(
+                                        stringResource(R.string.note_content_hint),
+                                        color = MaterialTheme.colorScheme.onSurface.copy(
+                                            stronglyDeemphasizedAlpha
+                                        ),
+                                        style = MaterialTheme.typography.titleLarge
+                                    )
+                                }
 
-                        TextField(
-                            readOnly = readOnly,
-                            value = note.content,
-                            onValueChange = {
-                                onModifyNote.invoke(note.copy(content = it))
-                            },
-                            modifier = Modifier
-                                .padding(
-                                    top = 37.dp,
-                                    start = 16.dp,
-                                    end = 16.dp,
-                                    bottom = 16.dp
-                                )
-                                .wrapContentHeight()
-                                .fillMaxWidth(),
-                            textStyle = MaterialTheme.typography.titleLarge,
-                            colors = TextFieldDefaults.colors(
-                                unfocusedContainerColor = MaterialTheme.colorScheme.background,
-                                focusedContainerColor = MaterialTheme.colorScheme.background,
-                                cursorColor = MaterialTheme.colorScheme.onBackground,
-                                focusedIndicatorColor = MaterialTheme.colorScheme.background,
-                                unfocusedIndicatorColor = MaterialTheme.colorScheme.background,
-                            ),
-                            placeholder = {
-                                Text(
-                                    stringResource(R.string.note_content_hint),
-                                    color = MaterialTheme.colorScheme.onSurface.copy(
-                                        stronglyDeemphasizedAlpha
-                                    ),
-                                    style = MaterialTheme.typography.titleLarge
-                                )
-                            }
-
-                        )
+                            )
+                        }
                     }
                 }
             }

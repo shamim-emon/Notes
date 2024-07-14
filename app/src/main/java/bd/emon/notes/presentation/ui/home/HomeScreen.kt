@@ -2,7 +2,12 @@ package bd.emon.notes.presentation.ui.home
 
 import android.annotation.SuppressLint
 import android.content.res.Configuration
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -16,6 +21,7 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
+import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -27,11 +33,21 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SmallFloatingActionButton
 import androidx.compose.material3.Surface
+import androidx.compose.material3.SwipeToDismissBox
+import androidx.compose.material3.SwipeToDismissBoxState
+import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -42,6 +58,7 @@ import bd.emon.notes.R
 import bd.emon.notes.domain.entity.Note
 import bd.emon.notes.presentation.ui.theme.NotesTheme
 import bd.emon.notes.presentation.ui.theme.stronglyDeemphasizedAlpha
+import kotlinx.coroutines.delay
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -50,6 +67,7 @@ fun HomeScreen(
     onSearchPressed: () -> Unit,
     onAddNotePressed: () -> Unit,
     onNotePressed: (Int) -> Unit,
+    onDeleteNotePressed: (Note) -> Unit,
     notes: List<Note>,
     loadState: Boolean = false
 ) {
@@ -80,6 +98,7 @@ fun HomeScreen(
                             .fillMaxSize()
                             .padding(innerPadding),
                         notes = notes,
+                        onDeleteNotePressed = onDeleteNotePressed,
                         onNotePressed = onNotePressed
                     )
                 }
@@ -119,6 +138,7 @@ private fun HomeScreenPreview() {
                 onSearchPressed = {},
                 onAddNotePressed = {},
                 onNotePressed = {},
+                onDeleteNotePressed = {},
                 notes = emptyList()
             )
         }
@@ -233,7 +253,7 @@ private fun NoteListPreview() {
         ) {
             Column(modifier = Modifier.fillMaxSize()) {
                 NoteList(
-                    notes = listOf(
+                    notes = mutableListOf(
                         Note(
                             id = 1,
                             title = "Book Review : The Design of Everyday Things by Don Norman",
@@ -243,6 +263,7 @@ private fun NoteListPreview() {
                         Note(id = 3, title = "Note3", content = "This is content of note 3"),
                         Note(id = 4, title = "Note4", content = "This is content of note 4")
                     ),
+                    onDeleteNotePressed = {},
                     onNotePressed = {}
                 )
             }
@@ -254,23 +275,31 @@ private fun NoteListPreview() {
 fun NoteList(
     modifier: Modifier = Modifier,
     notes: List<Note>,
-    onNotePressed: (Int) -> Unit
+    onNotePressed: (Int) -> Unit,
+    onDeleteNotePressed: (Note) -> Unit
 ) {
 
     Column(
         modifier = modifier
-            .padding(start = 24.dp, end = 24.dp)
+            .padding(start = 16.dp, end = 16.dp)
     ) {
         LazyColumn(
             contentPadding = PaddingValues(top = 16.dp, bottom = 16.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             notes.forEach {
-                item {
-                    Thumbnail(
-                        note = it,
-                        onThumbNailPressed = onNotePressed
-                    )
+                item(key = it.id) {
+                    SwipeToDeleteContainer(
+                        item = it,
+                        onDelete = { note ->
+                            onDeleteNotePressed.invoke(note)
+                        }
+                    ) { note ->
+                        Thumbnail(
+                            note = note,
+                            onThumbNailPressed = onNotePressed
+                        )
+                    }
                 }
             }
         }
@@ -278,9 +307,9 @@ fun NoteList(
 }
 
 @Composable
-fun WaitView(innerPadding: PaddingValues) {
+fun WaitView(modifier: Modifier = Modifier, innerPadding: PaddingValues) {
     Box(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .padding(innerPadding),
         contentAlignment = Alignment.Center
@@ -289,6 +318,81 @@ fun WaitView(innerPadding: PaddingValues) {
             modifier = Modifier.width(64.dp),
             color = MaterialTheme.colorScheme.secondary,
             trackColor = MaterialTheme.colorScheme.surfaceVariant,
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun <T> SwipeToDeleteContainer(
+    item: T,
+    onDelete: (T) -> Unit,
+    animationDuration: Int = 500,
+    content: @Composable (T) -> Unit
+) {
+    var isRemoved by remember {
+        mutableStateOf(false)
+    }
+    val state = rememberSwipeToDismissBoxState(
+        confirmValueChange = { value ->
+            if (value == SwipeToDismissBoxValue.EndToStart) {
+                isRemoved = true
+                true
+            } else {
+                false
+            }
+        }
+    )
+
+    LaunchedEffect(key1 = isRemoved) {
+        if (isRemoved) {
+            delay(animationDuration.toLong())
+            onDelete(item)
+        }
+    }
+
+    AnimatedVisibility(
+        visible = !isRemoved,
+        exit = shrinkVertically(
+            animationSpec = tween(durationMillis = animationDuration),
+            shrinkTowards = Alignment.Top
+        ) + fadeOut()
+    ) {
+        SwipeToDismissBox(
+            state = state,
+            enableDismissFromEndToStart = true,
+            enableDismissFromStartToEnd = false,
+            backgroundContent = {
+                DeleteBackground(swipeDismissState = state)
+            }
+        ) {
+            content(item)
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun DeleteBackground(
+    swipeDismissState: SwipeToDismissBoxState
+) {
+    val color = if (swipeDismissState.dismissDirection == SwipeToDismissBoxValue.EndToStart) {
+        Color.Red
+    } else {
+        Color.Transparent
+    }
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = color)
+            .padding(all = 16.dp),
+        contentAlignment = Alignment.CenterEnd
+    ) {
+        Icon(
+            imageVector = Icons.Outlined.Delete,
+            contentDescription = null,
+            tint = Color.White
         )
     }
 }
