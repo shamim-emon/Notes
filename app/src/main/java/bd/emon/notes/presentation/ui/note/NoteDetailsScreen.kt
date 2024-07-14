@@ -202,11 +202,6 @@ fun NoteDetailsScreen(
 }
 
 @Preview(
-    name = "NoteScreenViewMode light theme",
-    showBackground = true,
-    uiMode = Configuration.UI_MODE_NIGHT_YES
-)
-@Preview(
     name = "NoteScreenViewMode dark theme",
     showBackground = true,
     uiMode = Configuration.UI_MODE_NIGHT_NO

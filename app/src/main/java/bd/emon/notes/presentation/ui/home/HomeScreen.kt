@@ -117,11 +117,6 @@ fun HomeScreen(
 }
 
 @Preview(
-    name = "HomeScreen light theme",
-    showBackground = true,
-    uiMode = Configuration.UI_MODE_NIGHT_YES
-)
-@Preview(
     name = "HomeScreen dark theme",
     showBackground = true,
     uiMode = Configuration.UI_MODE_NIGHT_NO
@@ -232,11 +227,6 @@ fun Thumbnail(
     }
 }
 
-@Preview(
-    name = "NoteListPreview light theme",
-    showBackground = true,
-    uiMode = Configuration.UI_MODE_NIGHT_YES
-)
 @Preview(
     name = "NoteListPreview dark theme",
     showBackground = true,

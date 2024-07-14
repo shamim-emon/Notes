@@ -94,7 +94,6 @@ fun SearchScreen(
                         onNotePressed = onNotePressed
                     )
                 }
-
             }
         )
     }
@@ -107,9 +106,6 @@ fun SearchBar(
     onBackPressed: () -> Unit,
     onSearch: (String) -> Unit
 ) {
-    // var text by remember { mutableStateOf("") }
-
-
     Column(
         modifier = Modifier
             .padding(16.dp)
@@ -145,7 +141,7 @@ fun SearchBar(
                 },
                 trailingIcon = {
                     if (searchBarText.isNotEmpty()) {
-                        IconButton(onClick = {onSearch.invoke("")}) {
+                        IconButton(onClick = { onSearch.invoke("") }) {
                             Icon(
                                 imageVector = Icons.Default.Close,
                                 contentDescription = null
@@ -191,11 +187,6 @@ fun SearchBar(
     }
 }
 
-@Preview(
-    name = "SearchScreen light theme",
-    showBackground = true,
-    uiMode = Configuration.UI_MODE_NIGHT_YES
-)
 @Preview(
     name = "SearchScreen dark theme",
     showBackground = true,

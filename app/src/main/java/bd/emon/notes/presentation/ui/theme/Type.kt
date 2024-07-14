@@ -16,18 +16,17 @@ val NunitoFontFamily = FontFamily(
     )
 )
 
-// Set of Material typography styles to start with
 val Typography = Typography(
 
     headlineSmall = TextStyle(
-        fontFamily = FontFamily.Default,
+        fontFamily = NunitoFontFamily,
         fontWeight = FontWeight.Normal,
         lineHeight = 28.sp,
         fontSize = 25.sp
     ),
 
     titleLarge = TextStyle(
-        fontFamily = FontFamily.Default,
+        fontFamily = NunitoFontFamily,
         fontWeight = FontWeight.Light,
         fontSize = 20.sp,
         lineHeight = 27.sp,
@@ -35,7 +34,7 @@ val Typography = Typography(
     ),
 
     displayMedium = TextStyle(
-        fontFamily = FontFamily.Default,
+        fontFamily = NunitoFontFamily,
         fontWeight = FontWeight.SemiBold,
         fontSize = 43.sp,
         lineHeight = 47.sp,
@@ -43,35 +42,16 @@ val Typography = Typography(
     ),
 
     displaySmall = TextStyle(
-        fontFamily = FontFamily.Default,
+        fontFamily = NunitoFontFamily,
         fontWeight = FontWeight.Normal,
-        fontSize = 35.sp,
-//        lineHeight = 27.sp,
-//        letterSpacing = 10.sp
+        fontSize = 35.sp
     ),
 
     bodyLarge = TextStyle(
-        fontFamily = FontFamily.Default,
+        fontFamily = NunitoFontFamily,
         fontWeight = FontWeight.Normal,
         fontSize = 16.sp,
         lineHeight = 24.sp,
         letterSpacing = 0.5.sp
     )
-
-    /* Other default text styles to override
-    bodyLarge = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Normal,
-        fontSize = 16.sp,
-        lineHeight = 24.sp,
-        letterSpacing = 0.5.sp
-    )
-    labelSmall = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Medium,
-        fontSize = 11.sp,
-        lineHeight = 16.sp,
-        letterSpacing = 0.5.sp
-    )
-    */
 )
