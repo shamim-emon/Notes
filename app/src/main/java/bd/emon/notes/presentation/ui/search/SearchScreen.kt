@@ -25,10 +25,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -37,8 +33,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import bd.emon.notes.R
+import bd.emon.notes.domain.entity.Note
 import bd.emon.notes.presentation.ui.home.ContextBackground
+import bd.emon.notes.presentation.ui.home.NoteList
+import bd.emon.notes.presentation.ui.home.WaitView
 import bd.emon.notes.presentation.ui.theme.NotesTheme
+import bd.emon.notes.presentation.ui.theme.disabledAlpha
 import bd.emon.notes.presentation.ui.theme.stronglyDeemphasizedAlpha
 
 @Composable
@@ -46,24 +46,55 @@ fun SearchScreen(
     modifier: Modifier = Modifier,
     onBackPressed: () -> Unit,
     onSearch: (String) -> Unit,
+    onNotePressed: (Int) -> Unit,
+    notes: List<Note>,
+    loadState: Boolean = false,
+    searchBarText: String
 ) {
     Surface(modifier = modifier.fillMaxSize()) {
         Scaffold(
             topBar = {
                 SearchBar(
                     modifier = modifier,
+                    searchBarText = searchBarText,
                     onBackPressed,
                     onSearch
                 )
             },
             content = { innerPadding ->
-                ContextBackground(
-                    modifier = Modifier
-                        .padding(innerPadding)
-                        .fillMaxSize(),
-                    backgroundImgId = R.drawable.bg_search_empty,
-                    backgroundTextId = R.string.empty_search_result
-                )
+                if (loadState) {
+                    WaitView(innerPadding = innerPadding)
+                }
+                if (notes.isEmpty() && !loadState) {
+                    if (searchBarText.length > 3) {
+                        ContextBackground(
+                            modifier = Modifier
+                                .padding(innerPadding)
+                                .fillMaxSize(),
+                            backgroundImgId = R.drawable.bg_search_empty,
+                            backgroundTextId = R.string.empty_search_result
+                        )
+                    } else {
+                        ContextBackground(
+                            modifier = Modifier
+                                .padding(innerPadding)
+                                .fillMaxSize(),
+                            backgroundImgId = R.drawable.bg_search_initiate,
+                            backgroundTextId = R.string.search_initiation
+                        )
+                    }
+                }
+
+                if (notes.isNotEmpty() && !loadState) {
+                    NoteList(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(innerPadding),
+                        notes = notes,
+                        onNotePressed = onNotePressed
+                    )
+                }
+
             }
         )
     }
@@ -72,11 +103,12 @@ fun SearchScreen(
 @Composable
 fun SearchBar(
     modifier: Modifier = Modifier,
+    searchBarText: String,
     onBackPressed: () -> Unit,
     onSearch: (String) -> Unit
 ) {
-    var text by remember { mutableStateOf("") }
-    val onDismissClick = { text = "" }
+    // var text by remember { mutableStateOf("") }
+
 
     Column(
         modifier = Modifier
@@ -99,12 +131,9 @@ fun SearchBar(
         ) {
 
             OutlinedTextField(
-                value = text,
+                value = searchBarText,
                 onValueChange = {
-                    text = it
-                    if (text.length > 3) {
-                        onSearch(text)
-                    }
+                    onSearch.invoke(it)
                 },
                 leadingIcon = {
                     IconButton(onClick = onBackPressed) {
@@ -115,8 +144,8 @@ fun SearchBar(
                     }
                 },
                 trailingIcon = {
-                    if (text.isNotEmpty()) {
-                        IconButton(onClick = onDismissClick) {
+                    if (searchBarText.isNotEmpty()) {
+                        IconButton(onClick = {onSearch.invoke("")}) {
                             Icon(
                                 imageVector = Icons.Default.Close,
                                 contentDescription = null
@@ -125,11 +154,11 @@ fun SearchBar(
                     }
                 },
                 colors = TextFieldDefaults.colors(
-                    unfocusedContainerColor = MaterialTheme.colorScheme.inverseOnSurface,
-                    focusedContainerColor = MaterialTheme.colorScheme.inverseOnSurface,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.onSurface.copy(alpha = disabledAlpha),
+                    focusedContainerColor = MaterialTheme.colorScheme.onSurface.copy(alpha = disabledAlpha),
                     cursorColor = MaterialTheme.colorScheme.onBackground,
-                    focusedIndicatorColor = MaterialTheme.colorScheme.inverseOnSurface,
-                    unfocusedIndicatorColor = MaterialTheme.colorScheme.inverseOnSurface,
+                    focusedIndicatorColor = MaterialTheme.colorScheme.onSurface.copy(alpha = disabledAlpha),
+                    unfocusedIndicatorColor = MaterialTheme.colorScheme.onSurface.copy(alpha = disabledAlpha),
                 ),
                 placeholder = {
                     Row(
@@ -161,6 +190,7 @@ fun SearchBar(
         }
     }
 }
+
 @Preview(
     name = "SearchScreen light theme",
     showBackground = true,
@@ -181,7 +211,11 @@ private fun SearchScreenPreview() {
         ) {
             SearchScreen(
                 onBackPressed = {},
-                onSearch = {}
+                onSearch = {},
+                onNotePressed = {},
+                notes = emptyList(),
+                loadState = false,
+                searchBarText = ""
             )
         }
     }

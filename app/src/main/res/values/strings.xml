@@ -2,7 +2,8 @@
     <string name="app_name">Notes</string>
     <string name="first_note">Create your first note !</string>
     <string name="empty_search_result">File not found. Try searching again.</string>
-    <string name="search_hint">Search Notes</string>
+    <string name="search_initiation">Look For Notes!</string>
+    <string name="search_hint">Search</string>
     <string name="note_title_hint">Title</string>
     <string name="note_content_hint">Start Writing..</string>
     <string name="note_create_success">Successfully created note</string>

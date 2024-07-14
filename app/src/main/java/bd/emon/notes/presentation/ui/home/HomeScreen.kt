@@ -276,7 +276,7 @@ fun NoteList(
     modifier: Modifier = Modifier,
     notes: List<Note>,
     onNotePressed: (Int) -> Unit,
-    onDeleteNotePressed: (Note) -> Unit
+    onDeleteNotePressed: ((Note) -> Unit)? = null
 ) {
 
     Column(
@@ -287,14 +287,25 @@ fun NoteList(
             contentPadding = PaddingValues(top = 16.dp, bottom = 16.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            notes.forEach {
-                item(key = it.id) {
-                    SwipeToDeleteContainer(
-                        item = it,
-                        onDelete = { note ->
-                            onDeleteNotePressed.invoke(note)
+            onDeleteNotePressed?.let {
+                notes.forEach {
+                    item(key = it.id) {
+                        SwipeToDeleteContainer(
+                            item = it,
+                            onDelete = { note ->
+                                onDeleteNotePressed.invoke(note)
+                            }
+                        ) { note ->
+                            Thumbnail(
+                                note = note,
+                                onThumbNailPressed = onNotePressed
+                            )
                         }
-                    ) { note ->
+                    }
+                }
+            } ?: run {
+                notes.forEach { note ->
+                    item(key = note.id) {
                         Thumbnail(
                             note = note,
                             onThumbNailPressed = onNotePressed

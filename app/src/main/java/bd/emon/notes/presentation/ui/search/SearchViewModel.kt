@@ -18,6 +18,9 @@ class SearchViewModel @Inject constructor(
     private val dispatcher: CoroutineDispatcher
 ) : ViewModel() {
 
+    val searchBarText : LiveData<String>
+        get() = _searchBarText
+    private var _searchBarText : MutableLiveData<String> = MutableLiveData()
     val loadState: LiveData<Boolean>
         get() = _loadState
     private var _loadState: MutableLiveData<Boolean> = MutableLiveData(false)
@@ -29,6 +32,10 @@ class SearchViewModel @Inject constructor(
     val notes: LiveData<List<Note>>
         get() = _notes
     private var _notes: MutableLiveData<List<Note>> = MutableLiveData()
+
+    fun setSearchBarText(keyword: String) {
+        _searchBarText.value = keyword
+    }
 
     fun searchNote(keyword: String) {
         _loadState.value = true

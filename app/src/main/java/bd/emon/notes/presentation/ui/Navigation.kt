@@ -43,8 +43,10 @@ fun NotesNavHost(
 
         composable(route = SEARCH_ROUTE) {
             SearchRoute(
-                onSearch = {},
-                onBackPressed = { navController.navigateUp() }
+                onBackPressed = { navController.navigateUp() },
+                onNotePressed = { noteId ->
+                    navController.navigate(route = "$NOTE_ROUTE$noteId")
+                }
             )
         }
         composable(
