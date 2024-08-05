@@ -383,17 +383,22 @@ fun DeleteBackground(
         Color.Transparent
     }
 
-    Box(
+    Card(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = color)
-            .padding(all = 16.dp),
-        contentAlignment = Alignment.CenterEnd
     ) {
-        Icon(
-            imageVector = Icons.Outlined.Delete,
-            contentDescription = null,
-            tint = Color.White
-        )
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(color = color)
+                .padding(all = 16.dp),
+            contentAlignment = Alignment.CenterEnd
+        ) {
+            Icon(
+                imageVector = Icons.Outlined.Delete,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.inverseSurface
+            )
+        }
     }
 }
