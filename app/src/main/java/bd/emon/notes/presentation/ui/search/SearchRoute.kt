@@ -14,7 +14,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 @Composable
 fun SearchRoute(
     onBackPressed: () -> Unit,
-    onNotePressed: (Int) -> Unit
+    onNotePressed: (Int) -> Unit,
+    reloadPage: Boolean
 ) {
     val context = LocalContext.current
     val viewModel: SearchViewModel = hiltViewModel()
@@ -22,17 +23,16 @@ fun SearchRoute(
     val errorState by viewModel.errorState.observeAsState()
     val searchBarTextState by viewModel.searchBarText.observeAsState("")
     val notes by viewModel.notes.observeAsState(emptyList())
-    // This flag is used to reload search result when coming back from note details screen
-    var comingBackFromNoteDetails by remember { mutableStateOf(false) }
+    var reloadPageState by remember { mutableStateOf(reloadPage) }
 
     val onSearch: (String) -> Unit = {
         viewModel.searchNote(it)
         viewModel.setSearchBarText(it)
     }
 
-    if (comingBackFromNoteDetails) {
+    if (reloadPageState) {
         viewModel.searchNote(searchBarTextState)
-        comingBackFromNoteDetails = false
+        reloadPageState = false
     }
 
     LaunchedEffect(key1 = errorState) {
@@ -46,7 +46,6 @@ fun SearchRoute(
         onSearch = onSearch,
         onNotePressed = {
             onNotePressed.invoke(it)
-            comingBackFromNoteDetails = true
         },
         notes = notes,
         loadState = loadState,

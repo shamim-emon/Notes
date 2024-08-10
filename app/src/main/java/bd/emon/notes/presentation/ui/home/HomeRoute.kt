@@ -16,7 +16,8 @@ import bd.emon.notes.domain.entity.Note
 fun HomeRoute(
     onSearchPressed: () -> Unit,
     onAddNotePressed: () -> Unit,
-    onNotePressed: (Int) -> Unit
+    onNotePressed: (Int) -> Unit,
+    reloadPage: Boolean
 ) {
     val context = LocalContext.current
     val viewModel: HomeViewModel = hiltViewModel()
@@ -24,10 +25,17 @@ fun HomeRoute(
     val loadState by viewModel.loadState.observeAsState(initial = true)
     val errorState by viewModel.errorState.observeAsState()
     var isScreenLoaded by remember { mutableStateOf(false) }
+    var reloadPageState by remember { mutableStateOf(reloadPage) }
 
-    if (!isScreenLoaded) {
+    if (reloadPageState) {
         viewModel.getNotes()
-        isScreenLoaded = true
+        reloadPageState = false
+    }
+    LaunchedEffect(key1 = isScreenLoaded) {
+        if (!isScreenLoaded) {
+            viewModel.getNotes()
+            isScreenLoaded = true
+        }
     }
 
     val onDeleteNotePressed: (Note) -> Unit = { note: Note ->
@@ -43,14 +51,8 @@ fun HomeRoute(
 
     HomeScreen(
         onSearchPressed = onSearchPressed,
-        onAddNotePressed = {
-            onAddNotePressed.invoke()
-            isScreenLoaded = false
-        },
-        onNotePressed = {
-            onNotePressed.invoke(it)
-            isScreenLoaded = false
-        },
+        onAddNotePressed = onAddNotePressed,
+        onNotePressed = onNotePressed,
         onDeleteNotePressed = onDeleteNotePressed,
         notes = notes,
         loadState = loadState

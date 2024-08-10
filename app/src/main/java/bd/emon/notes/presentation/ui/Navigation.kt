@@ -8,6 +8,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import bd.emon.notes.common.NO_ID
+import bd.emon.notes.common.RELOAD_PAGE
 import bd.emon.notes.presentation.ui.Destination.HOME_ROUTE
 import bd.emon.notes.presentation.ui.Destination.NOTE_ROUTE
 import bd.emon.notes.presentation.ui.Destination.SEARCH_ROUTE
@@ -30,6 +31,7 @@ fun NotesNavHost(
         startDestination = HOME_ROUTE,
     ) {
         composable(route = HOME_ROUTE) {
+            val reloadPage = it.savedStateHandle.get<Boolean>(RELOAD_PAGE)
             HomeRoute(
                 onSearchPressed = { navController.navigate(route = SEARCH_ROUTE) },
                 onAddNotePressed = {
@@ -37,16 +39,19 @@ fun NotesNavHost(
                 },
                 onNotePressed = { noteId ->
                     navController.navigate(route = "$NOTE_ROUTE$noteId")
-                }
+                },
+                reloadPage = reloadPage ?: false
             )
         }
 
         composable(route = SEARCH_ROUTE) {
+            val reloadPage = it.savedStateHandle.get<Boolean>(RELOAD_PAGE)
             SearchRoute(
                 onBackPressed = { navController.navigateUp() },
                 onNotePressed = { noteId ->
                     navController.navigate(route = "$NOTE_ROUTE$noteId")
-                }
+                },
+                reloadPage = reloadPage ?: false
             )
         }
         composable(
@@ -59,11 +64,19 @@ fun NotesNavHost(
             )
         ) {
             val noteId = it.arguments!!.getInt("id")
+            val popBackStackWithResult = { reloadPage: Boolean ->
+                navController.previousBackStackEntry
+                    ?.savedStateHandle
+                    ?.set(RELOAD_PAGE, reloadPage)
+
+                navController.popBackStack()
+            }
             NoteDetailsRoute(
                 noteId = noteId,
                 onBackPressed = {
                     navController.navigateUp()
-                }
+                },
+                popBackStackWithResult = popBackStackWithResult
             )
         }
     }

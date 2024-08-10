@@ -5,3 +5,4 @@ const val UPDATE_ERROR = "Unable to update Note"
 const val FETCH_ERROR = "Unable to fetch Note"
 const val DELETE_ERROR = "Unable to delete Note"
 const val NO_ID = -1
+const val RELOAD_PAGE = "reloadPage"

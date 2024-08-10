@@ -20,7 +20,8 @@ import bd.emon.notes.domain.entity.Note
 @Composable
 fun NoteDetailsRoute(
     noteId: Int,
-    onBackPressed: () -> Unit
+    onBackPressed: () -> Unit,
+    popBackStackWithResult: (Boolean) -> Boolean
 ) {
     val context = LocalContext.current
     val viewModel: NoteDetailsViewModel = hiltViewModel()
@@ -49,7 +50,7 @@ fun NoteDetailsRoute(
             viewModel.editNote(id = id, title = title, content = content)
             successMessage = updateNoteSuccessMessage
         }
-        onBackPressed.invoke()
+        popBackStackWithResult.invoke(true)
     }
 
     val onEditPressed: () -> Unit = {
