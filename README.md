@@ -9,9 +9,10 @@
 <br/>  
 
 
-|     Solarized dark      |     Solarized Ocean     | Solarized dark          |
+|                         |                         |                         |
 |:-----------------------:|:-----------------------:|:------------------------|
 | ![](/previews/sc_1.jpg) | ![](/previews/sc_2.jpg) | ![](/previews/sc_3.jpg) |
+|                         |                         |                         |
 
 ## Tech stack & Open-source libraries
 - Minimum SDK level 24
