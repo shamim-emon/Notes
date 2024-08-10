@@ -30,9 +30,11 @@
 
 ## Architecture
 This app uses MVVM clean Architecture.
-<p align="center">  
-<img src="/previews/architecture.png"/>  
-</p>  
+
+|                                 |
+|:-------------------------------:|
+| ![](/previews/architecture.png) |
+|                                 | 
 
 <br/>  
 
