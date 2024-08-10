@@ -3,7 +3,7 @@
 </p>
 <h1 align="center"><b>Notes</b></h1>  
 <p align="center">    
- Notes demonstrates modern Android development with Jetpack Compose, Hilt,  Coroutines, Jetpack (Room, ViewModel,LiveData etc.), and Material Design based on MVVM clean architecture.  
+ Notes demonstrates modern Android development with <b>Jetpack Compose</b>, <b>Hilt</b>,  <b>Coroutines</b>, <b>Jetpack Components (Room, ViewModel,LiveData)</b>, and Material Design based on MVVM clean architecture.  
 </p>  
 <p align="center">  
   <a href="https://opensource.org/licenses/Apache-2.0"><img alt="License" src="https://img.shields.io/badge/License-Apache%202.0-blue.svg"/></a>  
