@@ -9,16 +9,11 @@
 <br/>  
 
 <p align="center">  
-<img src="/previews/sc_1.jpg"/>  
-</p>
-
-<p align="center">  
+<img src="/previews/sc_1.jpg"/> 
 <img src="/previews/sc_2.jpg"/>  
+<img src="/previews/sc_3.jpg"/>
 </p>
 
-<p align="center">  
-<img src="/previews/sc_3.jpg"/>  
-</p>
 
 
 ## Tech stack & Open-source libraries
