@@ -8,13 +8,10 @@
   <a href="https://android-arsenal.com/api?level=24"><img alt="API" src="https://img.shields.io/badge/API-24%2B-brightgreen.svg?style=flat"/></a></p>  
 <br/>  
 
-<p align="center">  
-<img src="/previews/sc_1.jpg"/> 
-<img src="/previews/sc_2.jpg"/>  
-<img src="/previews/sc_3.jpg"/>
-</p>
 
-
+|     Solarized dark      |     Solarized Ocean     | Solarized dark          |
+|:-----------------------:|:-----------------------:|:------------------------|
+| ![](/previews/sc_1.jpg) | ![](/previews/sc_2.jpg) | ![](/previews/sc_3.jpg) |
 
 ## Tech stack & Open-source libraries
 - Minimum SDK level 24
