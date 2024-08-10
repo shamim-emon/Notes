@@ -1,4 +1,6 @@
-<img align="center" src="https://github.com/shamim-emon/Notes/blob/main/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png">
+<p align="center">
+    <img  src="https://github.com/shamim-emon/Notes/blob/main/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png">
+</p>
 <h1 align="center">Notes</h1>  
 <p align="center">    
  Notes demonstrates modern Android development with Jetpack Compose Hilt,  Coroutines, Jetpack (Room, ViewModel,LiveData etc.), and Material Design based on MVVM clean architecture.  
